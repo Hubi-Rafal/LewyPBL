@@ -1,8 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-//#include "header_files/repertuar.h"
-//#include "header_files/admin.h"
 
 using namespace std;
 //===================================================================================================================================================================================================
@@ -21,13 +19,29 @@ using namespace std;
 			//! Funkcja login
 			/*!
 			*
-			* Funkcja umożliwiająca użytkownikowi zalogowanie się do serwisu
+			* Funkcja odpowiedzialna za logowanie do serwisu
 			*
 			*/
             void login()
             {
-
+				cout<<"Welcome user"<<endl;
             }
+            //! Funkcja userHandler
+			/*!
+			*
+			* Funkcja odpowiedzialna za nawigację po panelu uzytkownika serwisu
+			*
+			*/
+            void userHandler()
+            {
+            	int wybor;	
+				cout<<"Witaj w panelu uzytkownika aplikacji CineBooker."<<endl<<endl;
+				cout<<"[1] -- Przegladaj rezerwacje"<<endl;
+				cout<<"[2] -- Przegladaj repertuar"<<endl;
+				cout<<">";
+				cin>>wybor;
+			}
+			
             //! Funkcja przegladajRezerwacje
 			/*!
 			*
@@ -40,10 +54,6 @@ using namespace std;
 			}
             
             
-            void platnosc()
-            {
-            	
-			}
     };
     
 //===================================================================================================================================================================================================
@@ -261,8 +271,9 @@ class Controller
 		}
 	private:
 		
-		Admin adm; /*!< Obiekt klasy Admin znajdującej się w pliku admin.h */
-		Repertuar rp; /*!< Obiekt klasy Repertuar znajdującej się w pliku repertuar.h */
+		Admin adm; /*!< Obiekt klasy Admin */
+		Repertuar rp; /*!< Obiekt klasy Repertuar */
+		UserHandle uh; /*!< Obiekt klasy userHandle */
 		
 		//! Funkcja inputHandler
 		/*!
@@ -274,11 +285,12 @@ class Controller
 			switch(wybor)
 			{
 				case 1:
-					cout<<"Welcome user";
+					system("cls");
+					uh.login();
 					break;
 				case 2:
 					system("cls");
-					rp.wyswietl_repertuar();
+					rp.wyswietlRepertuar();
 					break;					
 				case 3:
 					system("cls");
