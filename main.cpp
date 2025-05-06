@@ -25,6 +25,8 @@ using namespace std;
             void login()
             {
 				cout<<"Welcome user"<<endl;
+				
+				system("pause");
             }
             //! Funkcja userHandler
 			/*!
@@ -40,6 +42,7 @@ using namespace std;
 				cout<<"[2] -- Przegladaj repertuar"<<endl;
 				cout<<">";
 				cin>>wybor;
+				system("pause");
 			}
 			
             //! Funkcja przegladajRezerwacje
@@ -110,6 +113,8 @@ class Admin
 						break;
 						
 				}
+				
+				system("pause");
 			}
 			//! Funkcja edytujFilm
 			/*!
@@ -120,6 +125,7 @@ class Admin
 			void edytujFilm()
 			{
 				
+				system("pause");
 			}
 			
 			
@@ -132,6 +138,7 @@ class Admin
 			void edytujSeans()
 			{
 				
+				system("pause");
 			}
 
 
@@ -212,6 +219,8 @@ class Repertuar
 				cout<<"####################################"<<endl<<endl;
 				
 			}
+			
+				system("pause");
 		}
 		//! Funkcja wybierzSeans
 		/*!
@@ -222,6 +231,7 @@ class Repertuar
 		void wybierzSeans()
 		{
 			
+				system("pause");
 		}
 		
 		//! Funkcja wybierzMiejsca
@@ -233,6 +243,7 @@ class Repertuar
 		void wybierzMiejsca()
 		{
 			
+				system("pause");
 		}
 		
 	private:
@@ -298,6 +309,8 @@ class Controller
 					break;
 					
 			}
+			
+				system("pause");
 			
 		}
 	
