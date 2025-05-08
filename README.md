@@ -1,5 +1,7 @@
-### Projekt PBL  Informatyka w systemach i układach elektronicznych, semestr 2
+### Projekt PBL Informatyka w systemach i układach elektronicznych, semestr 2
 #### Autorzy: Jan Saltarius, Hubert Rafał, Patryk Skowronek, Liubomyr Bardadyn, Maciej Kulczyna
 ***
-# CineBooker
-## CineBooker to aplikacja pozwalająca na rezerwację biletów do kina. Umożliwia przeglądanie repertuaru, wybieranie miejsc oraz zarządzanie salami.
+# *CineBooker*
+## CineBooker to aplikacja pozwalająca na obsługę i zarządzanie kinem. 
+### Widok Administratora daje możliwość dodawania, edytowania i usuwania filmów oraz sal.
+### Widok Klienta pozwala na przeglądanie repertuaru, wybieranie miejsc oraz rezerwację biletów.
