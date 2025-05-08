@@ -1,5 +1,6 @@
-### Projekt PBL Informatyka w systemach i układach elektronicznych, semestr 2
-#### Autorzy: Jan Saltarius, Hubert Rafał, Patryk Skowronek, Liubomyr Bardadyn, Maciej Kulczyna
+ Projekt PBL Informatyka w systemach i układach elektronicznych, semestr 2
+ 
+ Autorzy: Jan Saltarius, Hubert Rafał, Patryk Skowronek, Liubomyr Bardadyn, Maciej Kulczyna
 ***
 # *CineBooker*
 ## CineBooker to aplikacja pozwalająca na obsługę i zarządzanie kinem. 
