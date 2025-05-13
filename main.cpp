@@ -1,8 +1,30 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 
 using namespace std;
+
+
+class User
+{
+	private:
+		bool zalogowany;
+};
+
+
+class userAdmin : User
+{
+	
+};
+
+class loggedUser : User
+{
+	
+};
+
+
 //===================================================================================================================================================================================================
 //! Klasa UserHandle
 /*!
@@ -322,7 +344,17 @@ class Controller
 int main(int argc, char** argv) {
 	
 	Controller c;
-	c.start();
+//	c.start();
+
+	fstream f("repertuar.json");
+	
+	json xd = json::parse(f);
+	cout<<xd.at("tytul").at(0);
+	
+
+
+
+
 
 	system("pause");
 	return 0;
