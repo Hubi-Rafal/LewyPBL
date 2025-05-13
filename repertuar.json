@@ -1,5 +1,23 @@
-{
-    "tytul": ["xd1"],
-    "typ": ["2d"],
-    "godzina": ["12:30"] 
-}
+[
+    {
+        "Jezyk": "Polski",
+        "godzina": "12:30",
+        "typ": "2d",
+        "tytul": "Film1"
+    },
+    {
+        "Jezyk": "angielski",
+        "godzina": "21:37",
+        "typ": "3d",
+        "tytul": "Film2"
+    },
+    {
+        "Jezyk": "chujowy, co sie interesujesz",
+        "godzina": "7:35",
+        "typ": "4d",
+        "tytul": "Film3"
+    },
+    {
+        "tytul": "XD"
+    }
+]

@@ -179,26 +179,18 @@ class Repertuar
 		
 	public:
 		
-		//! Funkcja lineCount
-		/*!
-		*
-		* Funkcja obliczająca długość pliku służącego w programie za 'bazę danych'. Na podstawie uzyskanej wartości program ustanawia wielkość tablicy przechowującej informacje o seansach, oraz ilość tych seansów.
-		*
-		*/
-		int lineCount() 
+		ifstream f;
+		ofstream o;
+		Repertuar()
 		{
-			fstream plik;
-			plik.open("repertuar.txt",ios::in);
-			string tekst;
-			int lines = 0;
-			while(!plik.eof())
-			{
-				getline(plik,tekst);
-				++lines;
-			}
-			plik.close();
-			return lines;
+			f.open("repertuar.json");
 		}
+		
+		~Repertuar()
+		{
+			f.close();
+		}
+		
 		//! Funkcja wyswietlRepertuar
 		/*!
 		*
@@ -207,42 +199,28 @@ class Repertuar
 		*/
 		void wyswietlRepertuar()
 		{	
-			fstream plik;
-			string text;
 			
-			int lines = lineCount();
-
-			
-			plik.open("repertuar.txt",ios::in);
-			
+			json plik = json::parse(f);
+					
 			cout<<"=========== REPERTUAR ============="<<endl<<endl;
-			int atrybutyFilmu = 4;
 			
-			string filmy[atrybutyFilmu][lines];
-			
-			int i, j;
-			for(i=0;i<lines;++i)
-			{
-				for(j = 0;j<atrybutyFilmu;++j)
-				{
-					getline(plik,filmy[j][i]);
+//			cout<<plik["Film"][0];
+			int i = 0;
+			json jsonfile;
+			plik[3]["tytul"] = "XD";
+			o.open("repertuar.json");
+			o<<setw(4)<<plik;
 
-				}
-			}
-			
-			
-			for(int nrSeansu = 0; nrSeansu<lines/4; nrSeansu++)
+			for(auto xd : plik)
 			{
-				cout<<"############# Seans #"<<nrSeansu+1<<" #############"<<endl;
-				cout<<"#  Tytul filmu: "<<filmy[0][nrSeansu]<<endl;
-				cout<<"#  Godzina rozpoczecia: "<<filmy[1][nrSeansu]<<endl;
-				cout<<"#  Jezyk: "<<filmy[2][nrSeansu]<<endl;
-				cout<<"#  Typ (2d/3d): "<<filmy[3][nrSeansu]<<endl;
+				cout<<"############# Seans #"<<i+1<<" #############"<<endl;
+				cout<<"#  Tytul filmu: "<<xd["tytul"]<<endl;
+				cout<<"#  Godzina rozpoczecia: "<<xd["godzina"]<<endl;
+				cout<<"#  Jezyk: "<<xd["Jezyk"]<<endl;
+				cout<<"#  Typ (2d/3d): "<<xd["typ"]<<endl;
 				cout<<"####################################"<<endl<<endl;
-				
+				i++;
 			}
-			
-				system("pause");
 		}
 		//! Funkcja wybierzSeans
 		/*!
@@ -345,14 +323,31 @@ int main(int argc, char** argv) {
 	
 	Controller c;
 //	c.start();
-
-	fstream f("repertuar.json");
+	Repertuar r;
+	r.wyswietlRepertuar();
+	//fstream f("uzytkownicy.json");
 	
-	json xd = json::parse(f);
-	cout<<xd.at("tytul").at(0);
 	
-
-
+	
+//	json xd = json::parse(f);
+	/*cout<<xd.at("nazwaUzytkownika").at(0)<<endl;
+	//xd["tytul"][1] = "xd2";
+	if(xd["admin"][0]==nullptr)
+	{
+		cout<<xd;
+		
+	}
+	int i = 0;
+	
+	for(auto _ : xd)
+	{
+		cout<<xd["username"][i]<<" | ";
+		cout<<xd["password"][i]<<" | ";
+		cout<<xd["admin"][i]<<" | ";
+		cout<<endl;
+		i++;
+	}
+	*/
 
 
 

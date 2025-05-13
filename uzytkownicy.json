@@ -1,0 +1,5 @@
+{
+    "username": ["user1","user2","user3"],
+    "password": ["123","345","678"],
+    "admin": [null, null, 1]
+}
