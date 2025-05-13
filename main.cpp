@@ -189,7 +189,7 @@ class Repertuar
 		~Repertuar()
 		{
 			f.close();
-		}
+		} 
 		
 		//! Funkcja wyswietlRepertuar
 		/*!
@@ -207,9 +207,9 @@ class Repertuar
 //			cout<<plik["Film"][0];
 			int i = 0;
 			json jsonfile;
-			plik[3]["tytul"] = "XD";
-			o.open("repertuar.json");
-			o<<setw(4)<<plik;
+			plik[3]["tytul"] = "XD"; //
+			o.open("repertuar.json");// 	tu jest zapisywanie do pliku
+			o<<setw(4)<<plik;		 // 
 
 			for(auto xd : plik)
 			{
