@@ -181,9 +181,12 @@ class Repertuar
 		
 		ifstream f;
 		ofstream o;
+		json plik;
+		
 		Repertuar()
 		{
 			f.open("repertuar.json");
+			plik = json::parse(f);
 		}
 		
 		~Repertuar()
@@ -200,27 +203,38 @@ class Repertuar
 		void wyswietlRepertuar()
 		{	
 			
-			json plik = json::parse(f);
 					
 			cout<<"=========== REPERTUAR ============="<<endl<<endl;
 			
-//			cout<<plik["Film"][0];
-			int i = 0;
-			json jsonfile;
-			plik[3]["tytul"] = "XD"; //
-			o.open("repertuar.json");// 	tu jest zapisywanie do pliku
-			o<<setw(4)<<plik;		 // 
+	//		plik[3]["tytul"] = "XD"; //
+	//		o.open("repertuar.json");// 	tu jest zapisywanie do pliku
+	//		o<<setw(4)<<plik;		 // 
 
-			for(auto xd : plik)
+			int i = 0;
+			for(auto film : plik)
 			{
 				cout<<"############# Seans #"<<i+1<<" #############"<<endl;
-				cout<<"#  Tytul filmu: "<<xd["tytul"]<<endl;
-				cout<<"#  Godzina rozpoczecia: "<<xd["godzina"]<<endl;
-				cout<<"#  Jezyk: "<<xd["Jezyk"]<<endl;
-				cout<<"#  Typ (2d/3d): "<<xd["typ"]<<endl;
+				cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
+				cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
+				cout<<"#  Jezyk: "<<film["Jezyk"]<<endl;
+				cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
 				cout<<"####################################"<<endl<<endl;
 				i++;
 			}
+			
+			int wybor;
+			cout<<"Czy chcesdz wybrać któryś z seansów?"<<endl<<">";
+			cin>>wybor;
+			while(!isdigit(wybor))
+			{
+				
+				
+				fflush(stdin);
+				cout<<">";
+				cin>>wybor;
+			};
+			
+		
 		}
 		//! Funkcja wybierzSeans
 		/*!
