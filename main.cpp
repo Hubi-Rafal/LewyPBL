@@ -225,13 +225,12 @@ class Repertuar
 			int wybor;
 			cout<<"Czy chcesdz wybrać któryś z seansów?"<<endl<<">";
 			cin>>wybor;
-			while(!isdigit(wybor))
+			while(!(cin>>wybor))
 			{
 				
-				
-				fflush(stdin);
+				cin.clear();
+				cin.ignore(40,'\n');
 				cout<<">";
-				cin>>wybor;
 			};
 			
 		
