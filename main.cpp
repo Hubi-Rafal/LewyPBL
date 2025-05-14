@@ -77,7 +77,7 @@ class User
         {
         	cout<<"logout";
 		}
-        void registration()
+        string registration()
         {
             string username, password;
             cout << "Podaj nazwe uzytkownika: ";
@@ -133,6 +133,7 @@ class User
             ofstream outFile("uzytkownicy.json");
             outFile << setw(4) << plik;
             outFile.close();
+            return username;
         }
 };
 
@@ -381,6 +382,12 @@ class Repertuar
 
 class Controller
 {
+	private:
+		
+		Repertuar rp; /*!< Obiekt klasy Repertuar */
+		int zalogowany;
+		string username;
+		
 	public:
 		
 		Controller()
@@ -403,7 +410,8 @@ class Controller
 				{
 					cout<<"Witaj w menu głównym serwisu CineBooker."<<endl<<endl;
 					cout<<"[1] -- Login"<<endl;
-					cout<<"[2] -- Przegladaj repertuar"<<endl;
+					cout<<"[2] -- Rejestracja"<<endl;
+					cout<<"[3] -- Przegladaj repertuar"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
 					cout<<">";
 					cin>>wybor;
@@ -419,6 +427,12 @@ class Controller
 							}
 							break;
 						case 2:
+							username = u.registration();
+							zalogowany = 1;
+							
+							break;
+							
+						case 3:
 							rp.wyswietlRepertuar();
 							break;
 					}	
@@ -443,11 +457,7 @@ class Controller
 		}
 			
 	
-	private:
-		
-		Repertuar rp; /*!< Obiekt klasy Repertuar */
-		int zalogowany;
-		string username;		
+			
 	
 };
 
@@ -457,43 +467,14 @@ class Controller
 int main(int argc, char** argv) {
 
 
-    User u;
-    u.registration();
+//    User u;
+//    u.registration();
 
-//	Controller c;
-//	c.start();
+	Controller c;
+	c.start();
 //	Repertuar r;
 //	r.wybierzMiejsca();
-/*User u;
-string a = u.login(result);
 
-if(a[0]=="0")
-{
-	cout<<"not found";
-}else{
-	cout<<us;
-	int zalogowany = 1;
-}*/
-
-//	json xd = json::parse(f);
-	/*cout<<xd.at("nazwaUzytkownika").at(0)<<endl;
-	//xd["tytul"][1] = "xd2";
-	if(xd["admin"][0]==nullptr)
-	{
-		cout<<xd;
-	
-	}
-	int i = 0;
-	
-	for(auto _ : xd)
-	{
-		cout<<xd["username"][i]<<" | ";
-		cout<<xd["password"][i]<<" | ";
-		cout<<xd["admin"][i]<<" | ";
-		cout<<endl;
-		i++;
-	}
-	*/
 
 
 
