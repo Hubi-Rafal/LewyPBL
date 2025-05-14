@@ -11,18 +11,70 @@ class User
 {
 	private:
 		bool zalogowany;
-};
+		bool admin;
+		ifstream f;
+		json plik;
+	
+	
+	public:
+		User()
+		{
+			f.open("uzytkownicy.json");
+			plik = json::parse(f);
+			zalogowany = 0;
+			admin = 0;
+		}
+	
+		string login()
+        {
+        	system("cls");
+           	string us, pass;
+           	cout<<"Prosze wpisac nazwe uzytkownika"<<endl;
+			int found = 0;
+			while(found == 0)
+			{
+				cout<<">";
+				cin>>us;
+				for(auto element : plik)
+				{
+					system("cls");
+					if(element["username"]==us)
+					{
+					 	
+						while(!(pass == element["password"]))
+						{
+							system("cls");
+		
+							cout<<"znaleziono username, podaj haslo"<<endl<<">";
+							cin>>pass;
+
+							if(pass == element["password"])
+							{	
+								system("cls");
+								return us;
+								break;
+							}
+						}
+					}else
+					{
+						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie nobie"<<endl;
+						break;
+					}
+				}
+				
+			}
 
 
-class userAdmin : User
-{
+        }
+        void logout()
+        {
+        	cout<<"logout";
+		}
+        
 	
 };
 
-class loggedUser : User
-{
-	
-};
+
 
 
 //===================================================================================================================================================================================================
@@ -35,6 +87,8 @@ class loggedUser : User
 
     class UserHandle
     {
+    	private:
+    		ifstream f;
         public:
         	int zalogowany = 0; /*!< Zmienna odpowiadająca statusowi zalogowania użytkownika. 0 -- niezalogowany; 1 -- zalogowany */
         
@@ -44,12 +98,19 @@ class loggedUser : User
 			* Funkcja odpowiedzialna za logowanie do serwisu
 			*
 			*/
-            void login()
+            string login()
             {
-				cout<<"Welcome user"<<endl;
+            	string us;
+            	cout<<"Prosze wpisac nazwe uzytkownika"<<endl<<">";
+				cin>>us;
+
+				
+				
 				
 				system("pause");
             }
+            
+            
             //! Funkcja userHandler
 			/*!
 			*
@@ -276,7 +337,11 @@ class Controller
 {
 	public:
 		
-		
+		Controller()
+		{
+			zalogowany = 0;
+			
+		}
 		//! Funkcja Start
 		/*!
 		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
@@ -284,48 +349,62 @@ class Controller
 		int start()
 		{
 			int wybor;
+			while(wybor!=4)
+			{
+				
+				User u;
+				if(zalogowany == 0)
+				{
+					cout<<"Witaj w menu głównym serwisu CineBooker."<<endl<<endl;
+					cout<<"[1] -- Login"<<endl;
+					cout<<"[2] -- Przegladaj repertuar"<<endl;
+					cout<<"[4] -- Wyjdz"<<endl;
+					cout<<">";
+					cin>>wybor;
+					switch(wybor)
+					{
+						case 1:
+							
+							username = u.login();
+							if(username!="0")
+							{
+								zalogowany = 1;
+								break;
+							}
+							break;
+					}	
+				}else
+				{
+				
+					cin.clear();
+					cout<<"[1] -- Wyloguj"<<endl;
+					cout<<"[2] -- Przegladaj repertuar"<<endl;
+					cout<<"[4] -- Wyjdz"<<endl;
+					cout<<username<<">";
+					cin>>wybor;
+					switch(wybor)
+					{
+						case 1:
+							u.logout();
+							break;
+					}
+					
+				}
 			
-			cout<<"Witaj w serwisie CineBooker."<<endl<<endl;
-			cout<<"[1] -- Login"<<endl;
-			cout<<"[2] -- Przegladaj repertuar"<<endl;
-			cout<<">";
-			cin>>wybor;
 			
-			this->inputHandler(wybor);	
+			
+			
+			}
+
+				
 		}
+			
+	
 	private:
 		
-		Admin adm; /*!< Obiekt klasy Admin */
 		Repertuar rp; /*!< Obiekt klasy Repertuar */
-		UserHandle uh; /*!< Obiekt klasy userHandle */
-		
-		//! Funkcja inputHandler
-		/*!
-		* Funkcja obsługująca wybór dokonany przez użytkownika w funkcji start(). Zależnie od wartości wpisanej przez użytkownika, funkcja handler() odsyła go do innych metod i klas zawartych w programie.
-		*/
-		void inputHandler(int wybor)
-		{
-			
-			switch(wybor)
-			{
-				case 1:
-					system("cls");
-					uh.login();
-					break;
-				case 2:
-					system("cls");
-					rp.wyswietlRepertuar();
-					break;					
-				case 3:
-					system("cls");
-					adm.lobbyAdmin();
-					break;
-					
-			}
-			
-				system("pause");
-			
-		}
+		int zalogowany;
+		string username;		
 	
 };
 
@@ -335,10 +414,19 @@ class Controller
 int main(int argc, char** argv) {
 	
 	Controller c;
-//	c.start();
-	Repertuar r;
-	r.wyswietlRepertuar();
-	//fstream f("uzytkownicy.json");
+	c.start();
+//	Repertuar r;
+//	r.wyswietlRepertuar();
+/*User u;
+string a = u.login(result);
+
+if(a[0]=="0")
+{
+	cout<<"not found";
+}else{
+	cout<<us;
+	int zalogowany = 1;
+}*/
 	
 	
 	

@@ -1,5 +1,19 @@
-{
-    "username": ["user1","user2","user3"],
-    "password": ["123","345","678"],
-    "admin": [null, null, 1]
-}
+[
+    {
+    "username": "user1",
+    "password": "123",
+    "admin": null
+    },
+    {
+    "username": "user2",
+    "password": "345",
+    "admin": null
+    },    
+    {
+    "username": "user3",
+    "password": "678",
+    "admin": 1
+    }
+
+
+]
