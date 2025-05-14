@@ -43,7 +43,7 @@ class User
 	
 		string login()
         {
-            cout<<"\x1B[9J\x1B[0;0f";
+            //cout<<"\x1B[9J\x1B[0;0f";
            	string us, pass;
            	cout<<"Prosze wpisac nazwe uzytkownika"<<endl;
 			int found = 0;
@@ -140,7 +140,7 @@ class User
 
             if (!outFile.is_open()) {
                 cerr << "Nie można otworzyć pliku do zapisu." << endl;
-                return;
+                return 0;
             }else
             {
                 outFile << setw(4) << plik;
@@ -307,28 +307,18 @@ class Repertuar
 			}
 			
 			int wybor;
-			cout<<"Czy chcesz wybrać któryś z seansów?"<<endl<<">";
+			cout<<"Wybierz numer seansu na który chcesz kupić bilet. Wpisz '0' aby wrócić do menu"<<endl<<">";
 			cin>>wybor;
 			while(!(cin>>wybor))
 			{
-				
 				cin.clear();
 				cin.ignore(40,'\n');
 				cout<<">";
 			};
+
 			
-		
-		}
-		//! Funkcja wybierzSeans
-		/*!
-		*
-		* Funkcja służąca do umożliwienia użytkownikowi wybranie pożądanego przez niego seansu
-		*
-		*/
-		void wybierzSeans()
-		{
-			
-				system("pause");
+
+						
 		}
 		
 		//! Funkcja wybierzMiejsca
@@ -339,16 +329,27 @@ class Repertuar
 		*/
 		void wybierzMiejsca()
 		{
-            int tab[3][3] = {0,1,2,3,4,5,6,7,8};
+			int x1=3,y1=3;
+            int tab[x1][y1];
+            int a,b;
+            
+            for(a = 0;a<y1;a++)
+            {
+            	for(b = 0; b<x1;b++)
+            	{
+            		
+            		tab[a][b] = 2;
+				}
+			}
             int getchar;
             int polozenie[0][0];
             int x=0,y=0;
             do
             {
-                cout<<"\x1B[9J\x1B[0;0f";
-                for(int i = 0;i<3;i++)
+                system("cls");
+                for(int i = 0;i<y1;i++)
                 {
-                    for(int j = 0;j<3;j++)
+                    for(int j = 0;j<x1;j++)
                     {
                         if(i==y && j==x){
                             cout<<"|=X=|";
@@ -368,7 +369,7 @@ class Repertuar
                         }
                         break;
                     case KEY_DOWN:
-                        if(y<2)
+                        if(y<y1-1)
                         {
                             ++y;
                         }
@@ -380,7 +381,7 @@ class Repertuar
                         }
                         break;
                     case KEY_RIGHT:
-                        if(x<2)
+                        if(x<x1-1)
                         {
                             ++x;
                         }
@@ -497,9 +498,9 @@ int main(int argc, char** argv) {
 //    u.registration();
 
 	Controller c;
-	c.start();
-//	Repertuar r;
-//	r.wybierzMiejsca();
+//	c.start();
+	Repertuar r;
+	r.wybierzMiejsca();
 
 
 
