@@ -17,16 +17,18 @@ class User
 {
 	private:
 		
-		bool admin;
 		fstream f;
 		json plik;
-	
+		
 	
 	public:
+		string username;
+		bool admin;
 		bool zalogowany;
 		
 		User()
 		{
+			
 			f.open("uzytkownicy.json");
             if(!f.is_open())
             {
@@ -35,15 +37,30 @@ class User
                 json emptyArray = json::array();
                 outFile << emptyArray;
                 outFile.close();
-            }else {
+            }else{
                 cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
                 plik = json::parse(f);
                 zalogowany = false;
                 admin = false;
             }
 		}
-	
-		string login()
+		
+		void dodajFilm()
+		{
+			if(admin==false)
+			{
+				return;
+			}
+			cout<<"Podaj tytuł nowego filmu."<<endl<<">";
+			
+		}
+	//! Funkcja login()
+	/*!
+	*
+	* Służy do umożliwienia
+	*
+	*/
+		void login()
         {
         	system("cls");
             //cout<<"\x1B[9J\x1B[0;0f";
@@ -57,7 +74,7 @@ class User
 				for(auto element : plik)
 				{
 					system("cls");
-					if(element["username"]==us)
+					if(element["username"] == us)
 					{
 					 	
 						while(!(pass == element["password"]))
@@ -70,19 +87,26 @@ class User
 							if(pass == element["password"])
 							{	
 								system("cls");
+								username = us;
 								zalogowany = true;
-								return us;
+								if(element["admin"]!=nullptr)
+								{
+									admin = true;
+									return;
+								}
+
+								
 								break;
 							}
 						}
 					}else
 					{
 						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie nobie"<<endl;
-					//	continue;
 					}
+					
 
 				}
-				
+				return;
 			}
 
 
@@ -90,9 +114,11 @@ class User
         void logout()
         {
         	zalogowany = false;
+        	admin = false;
+        	username = "";
         	cout<<"logout";
 		}
-        string registration()
+        void registration()
         {
             string username, password;
             cout << "Podaj nazwe uzytkownika: ";
@@ -145,106 +171,21 @@ class User
 
             if (!outFile.is_open()) {
                 cerr << "Nie można otworzyć pliku do zapisu." << endl;
-                return 0;
+                //return 0;
             }else
             {
                 outFile << setw(4) << plik;
                 outFile.close();
+                zalogowany = true;
                 cout<<"Zarejestrowano pomyslnie, witaj w CineBooker!"<<endl;
             }
             
-            return username;
+//            return 0;
 
 
         }
 };
 
-
-  
-//===================================================================================================================================================================================================
-//! Klasa Admin
-/*!
-*
-* Klasa Admin słuzy do edytowania i zarządzania salami, seansami oraz repertuarem filmowym kina.
-*
-*/
-
-class Admin
-{
-	public:
-		//! Funkcja lobbyAdmin
-		/*!
-		*
-		* Stanowi menu główne administratora, stąd administrator może wybrać w jaki sposób chce zarządzać salami kinowymi.
-		*
-		*/
-		void lobbyAdmin()
-		{
-			int wybor;
-			cout<<"Witaj w panelu administracyjnym aplikacji CineBooker."<<endl<<endl;
-			cout<<"[1] -- Zarzadzaj Repertuarem"<<endl;
-			cout<<"[2] -- Zarzadzaj Seansami"<<endl;
-			cout<<"[3] -- Zarzadzaj Salami"<<endl;
-			cout<<">";
-			cin>>wybor;
-			
-			this->adminHandler(wybor);
-		}
-		private:
-			//! Funkcja adminHandler
-			/*!
-			*
-			* Obsługuje czynności które użytkownik może podjąć w panelu administratora
-			*
-			*/
-			void adminHandler(int wybor)
-			{
-				switch(wybor)
-				{
-					case 1:
-						//
-						break;
-					case 2:
-						//
-						break;					
-					case 3:
-						//
-						break;				
-					case 4:
-						//
-						break;
-						
-				}
-				
-				system("pause");
-			}
-			//! Funkcja edytujFilm
-			/*!
-			*
-			* Pozwala edytować informacje o wyświetlanym przez kino filmie
-			*
-			*/
-			void edytujFilm()
-			{
-				
-				system("pause");
-			}
-			
-			
-			//! Funkcja edytujSeans
-			/*!
-			*
-			* Pozwala edytować zaplanowany seans.
-			*
-			*/
-			void edytujSeans()
-			{
-				
-				system("pause");
-			}
-
-
-};
 
 
 //===================================================================================================================================================================================================
@@ -337,7 +278,7 @@ class Repertuar
             int miejsce;
 			
 			int x1=4;
-			int y1=3;
+			int y1=4;
             int tab[x1][y1];
             int a,b;
             
@@ -430,7 +371,6 @@ class Controller
 		
 		Repertuar rp; /*!< Obiekt klasy Repertuar */
 		int zalogowany;
-		string username;
 		
 	public:
 		
@@ -448,7 +388,7 @@ class Controller
 				
 				if(u.zalogowany == false)
 				{
-					cout<<"Witaj w menu głównym serwisu CineBooker."<<endl<<endl;
+					cout<<"Witaj w menu głownym serwisu CineBooker."<<endl<<endl;
 					cout<<"[1] -- Login"<<endl;
 					cout<<"[2] -- Rejestracja"<<endl;
 					cout<<"[3] -- Przegladaj repertuar"<<endl;
@@ -458,12 +398,10 @@ class Controller
 					switch(wybor)
 					{
 						case 1:
-							
-							username = u.login();
-							
+							u.login();
 							break;
 						case 2:
-							username = u.registration();
+							u.registration();
 							
 							
 							break;
@@ -472,6 +410,30 @@ class Controller
 							rp.wyswietlRepertuar();
 							break;
 					}	
+				}else if(u.admin == true)
+				{
+					system("cls");
+					cin.clear();
+					cout<<"Hello admin"<<endl;
+					cout<<"[1] -- Wyloguj"<<endl;
+					cout<<"[2] -- Edytuj repertuar"<<endl;
+					cout<<"[4] -- Wyjdz"<<endl;
+					cout<<u.username<<">";
+					cin>>wybor;
+					switch(wybor)
+					{
+						case 1:
+							u.logout();
+							
+							break;
+						case 2:
+							rp.wyswietlRepertuar();
+							break;
+							
+						case 4:
+							return 0;
+							break;
+					}
 				}else
 				{
 					system("cls");
@@ -479,13 +441,12 @@ class Controller
 					cout<<"[1] -- Wyloguj"<<endl;
 					cout<<"[2] -- Przegladaj repertuar"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
-					cout<<username<<">";
+					cout<<u.username<<">";
 					cin>>wybor;
 					switch(wybor)
 					{
 						case 1:
 							u.logout();
-							username = "";
 							break;
 						case 2:
 							rp.wyswietlRepertuar();
