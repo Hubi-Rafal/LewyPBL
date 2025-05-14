@@ -277,8 +277,8 @@ class Repertuar
 		{
             int miejsce;
 
-			int x1=8;
-			int y1=3;
+			int x1=12;
+			int y1=6;
             int tab[y1][x1];
             int a,b,c = 0;
             
@@ -301,8 +301,10 @@ class Repertuar
                     for(int j = 0;j<x1;j++)
                     {
                         if(i==y && j==x){
-                            cout<<"|=IX=|";
+                            cout<<"|==X==|";
                         }else if (tab[i][j] < 10){
+                            cout<<"|  "<<tab[i][j]<<"  |";
+                        }else if(tab[i][j] < 100){
                             cout<<"|  "<<tab[i][j]<<" |";
                         }else{
                             cout<<"| "<<tab[i][j]<<" |";
