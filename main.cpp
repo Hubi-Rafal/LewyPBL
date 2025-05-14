@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
+#include <windows.h>
 #include <conio.h>
 #include "nlohmann/json.hpp"
 
@@ -16,10 +16,10 @@ using namespace std;
 class User
 {
 	private:
-		
+
 		fstream f;
 		json plik;
-		
+
 	
 	public:
 		string username;
@@ -28,7 +28,7 @@ class User
 		
 		User()
 		{
-			
+
 			f.open("uzytkownicy.json");
             if(!f.is_open())
             {
@@ -44,7 +44,7 @@ class User
                 admin = false;
             }
 		}
-		
+
 		void dodajFilm()
 		{
 			if(admin==false)
@@ -52,7 +52,7 @@ class User
 				return;
 			}
 			cout<<"Podaj tytuł nowego filmu."<<endl<<">";
-			
+
 		}
 	//! Funkcja login()
 	/*!
@@ -95,7 +95,7 @@ class User
 									return;
 								}
 
-								
+
 								break;
 							}
 						}
@@ -103,7 +103,7 @@ class User
 					{
 						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie nobie"<<endl;
 					}
-					
+
 
 				}
 				return;
@@ -276,18 +276,17 @@ class Repertuar
 		void wybierzMiejsca(int zalogowany)
 		{
             int miejsce;
-			
-			int x1=4;
-			int y1=4;
-            int tab[x1][y1];
-            int a,b;
+
+			int x1=8;
+			int y1=3;
+            int tab[y1][x1];
+            int a,b,c = 0;
             
             for(a = 0; a<y1 ;a++)
             {
             	for(b = 0; b<x1;b++)
             	{
-            		
-            		tab[a][b] = a*b;
+            		tab[a][b] = c++;
 				}
 			}
             int getchar;
@@ -296,12 +295,15 @@ class Repertuar
             do
             {
                 system("cls");
+                cout << "  ================== EKRAN ====================" << endl << endl;
                 for(int i = 0;i<y1;i++)
                 {
                     for(int j = 0;j<x1;j++)
                     {
                         if(i==y && j==x){
-                            cout<<"|=X=|";
+                            cout<<"|=IX=|";
+                        }else if (tab[i][j] < 10){
+                            cout<<"|  "<<tab[i][j]<<" |";
                         }else{
                             cout<<"| "<<tab[i][j]<<" |";
                         }
@@ -309,7 +311,7 @@ class Repertuar
                     cout<<endl;
                 }
                 getchar = getch();
-                
+
                 switch(getchar)
                 {
                     case KEY_UP:
@@ -345,10 +347,10 @@ class Repertuar
             cout<<"Wybrane miejsce: "<<miejsce<<endl;
             if(zalogowany == 0)
             {
-//            	string username = 
+//            	string username =
 			}
-            
-            
+
+
             system("pause");
 		}
 		
@@ -373,7 +375,7 @@ class Controller
 		int zalogowany;
 		
 	public:
-		
+
 		//! Funkcja Start
 		/*!
 		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
@@ -384,11 +386,11 @@ class Controller
 			User u;
 			while(wybor!=4)
 			{
-				
-				
+
+
 				if(u.zalogowany == false)
 				{
-					cout<<"Witaj w menu głownym serwisu CineBooker."<<endl<<endl;
+					cout<<"Witaj w menu głównym serwisu CineBooker."<<endl<<endl;
 					cout<<"[1] -- Login"<<endl;
 					cout<<"[2] -- Rejestracja"<<endl;
 					cout<<"[3] -- Przegladaj repertuar"<<endl;
@@ -424,12 +426,12 @@ class Controller
 					{
 						case 1:
 							u.logout();
-							
+
 							break;
 						case 2:
 							rp.wyswietlRepertuar();
 							break;
-							
+
 						case 4:
 							return 0;
 							break;
@@ -460,10 +462,7 @@ class Controller
 				}
 			}
 		}
-			
-	
-			
-	
+
 };
 
 
@@ -471,14 +470,16 @@ class Controller
 //===================================================================================================================================================================================================
 int main(int argc, char** argv) {
 
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
 
 //    User u;
 //    u.registration();
 
-	Controller c;
-	c.start();
-//	Repertuar r;
-//	r.wybierzMiejsca(1);
+//	Controller c;
+//	c.start();
+	Repertuar r;
+	r.wybierzMiejsca(1);
 
 
 
