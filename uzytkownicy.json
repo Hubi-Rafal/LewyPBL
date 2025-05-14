@@ -1,19 +1,27 @@
 [
     {
-    "username": "user1",
-    "password": "123",
-    "admin": null
+        "admin": null,
+        "password": "123",
+        "username": "user1"
     },
     {
-    "username": "user2",
-    "password": "345",
-    "admin": null
-    },    
+        "admin": null,
+        "password": "345",
+        "username": "user2"
+    },
     {
-    "username": "user3",
-    "password": "678",
-    "admin": 1
+        "admin": 1,
+        "password": "678",
+        "username": "user3"
+    },
+    {
+        "admin": null,
+        "password": "AA",
+        "username": "aaa"
+    },
+    {
+        "admin": null,
+        "password": "BB",
+        "username": "bb"
     }
-
-
 ]

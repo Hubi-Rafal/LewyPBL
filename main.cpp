@@ -18,7 +18,7 @@ class User
 	private:
 		bool zalogowany;
 		bool admin;
-		ifstream f;
+		fstream f;
 		json plik;
 	
 	
@@ -27,8 +27,8 @@ class User
 		{
 			f.open("uzytkownicy.json");
 			plik = json::parse(f);
-			zalogowany = 0;
-			admin = 0;
+			zalogowany = false;
+			admin = false;
 		}
 	
 		string login()
@@ -80,6 +80,25 @@ class User
         void registration()
         {
             string username, password;
+            cout << "Podaj nazwe uzytkownika: ";
+            cin >> username;
+            cout << "Podaj haslo: ";
+            cin >> password;
+            cout<<"\x1B[1J\x1B[0;0f";
+
+            // Dodanie nowego użytkownika do obiektu JSON
+            json newUser = {
+                {"username", username},
+                {"password", password},
+                {"admin", nullptr}
+            };
+            plik.push_back(newUser);
+
+            // Zapisanie obiektu JSON do pliku
+            f.close(); // Zamknięcie pliku w trybie odczytu
+            ofstream outFile("uzytkownicy.json");
+            outFile << setw(4) << plik;
+            outFile.close();
         }
 };
 
@@ -271,7 +290,7 @@ class Repertuar
                     for(int j = 0;j<3;j++)
                     {
                         if(i==y && j==x){
-                            cout<<"| "<<"X"<<" |";
+                            cout<<"|=X=|";
                         }else{
                             cout<<"| "<<tab[i][j]<<" |";
                         }
@@ -402,11 +421,15 @@ class Controller
 
 //===================================================================================================================================================================================================
 int main(int argc, char** argv) {
-	
-	Controller c;
+
+
+    User u;
+    u.registration();
+
+//	Controller c;
 //	c.start();
-	Repertuar r;
-	r.wybierzMiejsca();
+//	Repertuar r;
+//	r.wybierzMiejsca();
 /*User u;
 string a = u.login(result);
 
