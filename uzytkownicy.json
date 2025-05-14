@@ -13,15 +13,6 @@
         "admin": 1,
         "password": "678",
         "username": "user3"
-    },
-    {
-        "admin": null,
-        "password": "AA",
-        "username": "aaa"
-    },
-    {
-        "admin": null,
-        "password": "BB",
-        "username": "bb"
     }
+    
 ]

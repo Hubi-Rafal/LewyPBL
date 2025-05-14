@@ -82,10 +82,44 @@ class User
             string username, password;
             cout << "Podaj nazwe uzytkownika: ";
             cin >> username;
-            cout << "Podaj haslo: ";
+            
+			int flag;
+            for(auto element : plik)
+            {
+
+	            if(username==element["username"])
+	            {
+	            	flag = 1;
+				}
+            	
+			}
+			
+			while(flag == 1)
+			{
+				cin.clear();
+	        	cout << "Ta nazwa uzytkownika jest zajeta. "<<endl<<"Podaj nazwe uzytkownika: ";
+    		    cin >> username;
+				for(auto element : plik)
+				{
+					if(username == element["username"])
+					{
+						flag = 1;
+						break;
+					}else{
+						flag = 0;
+					}
+				}
+			}
+			
+            
+            	
+			
+			
+			cout << "Podaj haslo: ";
             cin >> password;
             cout<<"\x1B[1J\x1B[0;0f";
-
+			
+			
             // Dodanie nowego użytkownika do obiektu JSON
             json newUser = {
                 {"username", username},
