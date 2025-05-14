@@ -16,13 +16,15 @@ using namespace std;
 class User
 {
 	private:
-		bool zalogowany;
+		
 		bool admin;
 		fstream f;
 		json plik;
 	
 	
 	public:
+		bool zalogowany;
+		
 		User()
 		{
 			f.open("uzytkownicy.json");
@@ -43,6 +45,7 @@ class User
 	
 		string login()
         {
+        	system("cls");
             //cout<<"\x1B[9J\x1B[0;0f";
            	string us, pass;
            	cout<<"Prosze wpisac nazwe uzytkownika"<<endl;
@@ -67,6 +70,7 @@ class User
 							if(pass == element["password"])
 							{	
 								system("cls");
+								zalogowany = true;
 								return us;
 								break;
 							}
@@ -85,6 +89,7 @@ class User
         }
         void logout()
         {
+        	zalogowany = false;
         	cout<<"logout";
 		}
         string registration()
@@ -308,7 +313,7 @@ class Repertuar
 			
 			int wybor;
 			cout<<"Wybierz numer seansu na który chcesz kupić bilet. Wpisz '0' aby wrócić do menu"<<endl<<">";
-			cin>>wybor;
+			
 			while(!(cin>>wybor))
 			{
 				cin.clear();
@@ -327,18 +332,21 @@ class Repertuar
 		* Funkcja umożliwiająca użytkownikowi zarezerwowanie miejsca na wybranym seansie
 		*
 		*/
-		void wybierzMiejsca()
+		void wybierzMiejsca(int zalogowany)
 		{
-			int x1=3,y1=3;
+            int miejsce;
+			
+			int x1=4;
+			int y1=3;
             int tab[x1][y1];
             int a,b;
             
-            for(a = 0;a<y1;a++)
+            for(a = 0; a<y1 ;a++)
             {
             	for(b = 0; b<x1;b++)
             	{
             		
-            		tab[a][b] = 2;
+            		tab[a][b] = a*b;
 				}
 			}
             int getchar;
@@ -360,6 +368,7 @@ class Repertuar
                     cout<<endl;
                 }
                 getchar = getch();
+                
                 switch(getchar)
                 {
                     case KEY_UP:
@@ -387,10 +396,18 @@ class Repertuar
                         }
                         break;
                     case 13:
-                        cout<<tab[y][x];
-                        exit(0);
+                        miejsce = tab[y][x];
+                        break;
                 }
-            }while(x!=13);
+            }while(getchar!=13);
+            
+            cout<<"Wybrane miejsce: "<<miejsce<<endl;
+            if(zalogowany == 0)
+            {
+//            	string username = 
+			}
+            
+            
             system("pause");
 		}
 		
@@ -417,11 +434,6 @@ class Controller
 		
 	public:
 		
-		Controller()
-		{
-			zalogowany = 0;
-			
-		}
 		//! Funkcja Start
 		/*!
 		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
@@ -429,11 +441,12 @@ class Controller
 		int start()
 		{
 			int wybor;
+			User u;
 			while(wybor!=4)
 			{
 				
-				User u;
-				if(zalogowany == 0)
+				
+				if(u.zalogowany == false)
 				{
 					cout<<"Witaj w menu głównym serwisu CineBooker."<<endl<<endl;
 					cout<<"[1] -- Login"<<endl;
@@ -447,15 +460,11 @@ class Controller
 						case 1:
 							
 							username = u.login();
-							if(username!="0")
-							{
-								zalogowany = 1;
-								break;
-							}
+							
 							break;
 						case 2:
 							username = u.registration();
-							zalogowany = 1;
+							
 							
 							break;
 							
@@ -465,7 +474,7 @@ class Controller
 					}	
 				}else
 				{
-				
+					system("cls");
 					cin.clear();
 					cout<<"[1] -- Wyloguj"<<endl;
 					cout<<"[2] -- Przegladaj repertuar"<<endl;
@@ -476,6 +485,14 @@ class Controller
 					{
 						case 1:
 							u.logout();
+							username = "";
+							break;
+						case 2:
+							rp.wyswietlRepertuar();
+							break;
+							
+						case 4:
+							return 0;
 							break;
 					}
 				
@@ -498,9 +515,9 @@ int main(int argc, char** argv) {
 //    u.registration();
 
 	Controller c;
-//	c.start();
-	Repertuar r;
-	r.wybierzMiejsca();
+	c.start();
+//	Repertuar r;
+//	r.wybierzMiejsca(1);
 
 
 
