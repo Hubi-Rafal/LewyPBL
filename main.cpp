@@ -1,12 +1,18 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <conio.h>
 #include "nlohmann/json.hpp"
+
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
 using json = nlohmann::json;
 
 using namespace std;
 
-
+/*
 class User
 {
 	private:
@@ -58,8 +64,9 @@ class User
 					}else
 					{
 						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie nobie"<<endl;
-						break;
+					//	continue;
 					}
+
 				}
 				
 			}
@@ -75,73 +82,7 @@ class User
 };
 
 
-
-
-//===================================================================================================================================================================================================
-//! Klasa UserHandle
-/*!
-*
-* Klasa UserHandle zajmuje się obsługą akcji logowania się przez użytkownika do systemu CineBooker. Gdy użytkownik jest zalogowany, klasa ta umożliwia mu również kupienie biletu na wybrany seans
-*
-*/
-
-    class UserHandle
-    {
-    	private:
-    		ifstream f;
-        public:
-        	int zalogowany = 0; /*!< Zmienna odpowiadająca statusowi zalogowania użytkownika. 0 -- niezalogowany; 1 -- zalogowany */
-        
-			//! Funkcja login
-			/*!
-			*
-			* Funkcja odpowiedzialna za logowanie do serwisu
-			*
-			*/
-            string login()
-            {
-            	string us;
-            	cout<<"Prosze wpisac nazwe uzytkownika"<<endl<<">";
-				cin>>us;
-
-				
-				
-				
-				system("pause");
-            }
-            
-            
-            //! Funkcja userHandler
-			/*!
-			*
-			* Funkcja odpowiedzialna za nawigację po panelu uzytkownika serwisu
-			*
-			*/
-            void userHandler()
-            {
-            	int wybor;	
-				cout<<"Witaj w panelu uzytkownika aplikacji CineBooker."<<endl<<endl;
-				cout<<"[1] -- Przegladaj rezerwacje"<<endl;
-				cout<<"[2] -- Przegladaj repertuar"<<endl;
-				cout<<">";
-				cin>>wybor;
-				system("pause");
-			}
-			
-            //! Funkcja przegladajRezerwacje
-			/*!
-			*
-			* Funkcja pozwalająca zalogowanemu użytkownikowi przeglądać i zarządzać dokonanymi rezerwacjami
-			*
-			*/
-            void przegladajRezerwacje()
-            {
-            	
-			}
-            
-            
-    };
-    
+  
 //===================================================================================================================================================================================================
 //! Klasa Admin
 /*!
@@ -346,7 +287,7 @@ class Controller
 		/*!
 		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
 		*/
-		int start()
+/*		int start()
 		{
 			int wybor;
 			while(wybor!=4)
@@ -372,6 +313,9 @@ class Controller
 								break;
 							}
 							break;
+						case 2:
+							rp.wyswietlRepertuar();
+							break;
 					}	
 				}else
 				{
@@ -388,18 +332,18 @@ class Controller
 							u.logout();
 							break;
 					}
-					
+				
 				}
+	
 			
-			
-			
+		
 			
 			}
 
 				
 		}
 			
-	
+	*/
 	private:
 		
 		Repertuar rp; /*!< Obiekt klasy Repertuar */
@@ -414,7 +358,7 @@ class Controller
 int main(int argc, char** argv) {
 	
 	Controller c;
-	c.start();
+//	c.start();
 //	Repertuar r;
 //	r.wyswietlRepertuar();
 /*User u;
@@ -427,16 +371,72 @@ if(a[0]=="0")
 	cout<<us;
 	int zalogowany = 1;
 }*/
-	
-	
-	
+	int tab[3][3] = {0,1,2,3,4,5,6,7,8};
+	int getchar;
+	int polozenie[0][0];
+	int x=0,y=0;
+	do
+	{
+		system("cls");
+		for(int i = 0;i<3;i++)
+		{	
+			for(int j = 0;j<3;j++)
+			{
+				if(i==y && j==x){
+					cout<<"| "<<"X"<<" |";
+					
+				}else{
+					cout<<"| "<<tab[i][j]<<" |";
+					
+				}
+
+			}
+			cout<<endl;
+		}
+		getchar = getch();
+		switch(getchar)
+		{
+			case KEY_UP:
+				if(y>0)
+				{
+					--y;				
+				}
+				
+				
+				break;
+			case KEY_DOWN:
+				if(y<2)
+				{
+					++y;				
+				}
+				break;
+			case KEY_LEFT:
+				if(x>0)
+				{
+					--x;					
+				}
+				break;
+			case KEY_RIGHT:
+				if(x<2)
+				{
+					++x;					
+				}
+
+				break;
+			case 13:
+				cout<<tab[y][x];
+				return 0;
+				break;
+		}
+		
+	}while(x!=13);
 //	json xd = json::parse(f);
 	/*cout<<xd.at("nazwaUzytkownika").at(0)<<endl;
 	//xd["tytul"][1] = "xd2";
 	if(xd["admin"][0]==nullptr)
 	{
 		cout<<xd;
-		
+	
 	}
 	int i = 0;
 	
