@@ -33,7 +33,7 @@ class User
 	
 		string login()
         {
-        	system("cls");
+            cout<<"\x1B[9J\x1B[0;0f";
            	string us, pass;
            	cout<<"Prosze wpisac nazwe uzytkownika"<<endl;
 			int found = 0;
@@ -77,8 +77,10 @@ class User
         {
         	cout<<"logout";
 		}
-        
-	
+        void registration()
+        {
+            string username, password;
+        }
 };
 
 
@@ -225,7 +227,7 @@ class Repertuar
 			}
 			
 			int wybor;
-			cout<<"Czy chcesdz wybrać któryś z seansów?"<<endl<<">";
+			cout<<"Czy chcesz wybrać któryś z seansów?"<<endl<<">";
 			cin>>wybor;
 			while(!(cin>>wybor))
 			{
@@ -257,8 +259,58 @@ class Repertuar
 		*/
 		void wybierzMiejsca()
 		{
-			
-				system("pause");
+            int tab[3][3] = {0,1,2,3,4,5,6,7,8};
+            int getchar;
+            int polozenie[0][0];
+            int x=0,y=0;
+            do
+            {
+                cout<<"\x1B[9J\x1B[0;0f";
+                for(int i = 0;i<3;i++)
+                {
+                    for(int j = 0;j<3;j++)
+                    {
+                        if(i==y && j==x){
+                            cout<<"| "<<"X"<<" |";
+                        }else{
+                            cout<<"| "<<tab[i][j]<<" |";
+                        }
+                    }
+                    cout<<endl;
+                }
+                getchar = getch();
+                switch(getchar)
+                {
+                    case KEY_UP:
+                        if(y>0)
+                        {
+                            --y;
+                        }
+                        break;
+                    case KEY_DOWN:
+                        if(y<2)
+                        {
+                            ++y;
+                        }
+                        break;
+                    case KEY_LEFT:
+                        if(x>0)
+                        {
+                            --x;
+                        }
+                        break;
+                    case KEY_RIGHT:
+                        if(x<2)
+                        {
+                            ++x;
+                        }
+                        break;
+                    case 13:
+                        cout<<tab[y][x];
+                        exit(0);
+                }
+            }while(x!=13);
+            system("pause");
 		}
 		
 	private:
@@ -334,13 +386,7 @@ class Controller
 					}
 				
 				}
-	
-			
-		
-			
 			}
-
-				
 		}
 			
 	
@@ -359,8 +405,8 @@ int main(int argc, char** argv) {
 	
 	Controller c;
 //	c.start();
-//	Repertuar r;
-//	r.wyswietlRepertuar();
+	Repertuar r;
+	r.wybierzMiejsca();
 /*User u;
 string a = u.login(result);
 
@@ -371,65 +417,7 @@ if(a[0]=="0")
 	cout<<us;
 	int zalogowany = 1;
 }*/
-	int tab[3][3] = {0,1,2,3,4,5,6,7,8};
-	int getchar;
-	int polozenie[0][0];
-	int x=0,y=0;
-	do
-	{
-		cout<<"\x1B[9J\x1B[0;0f";
-		for(int i = 0;i<3;i++)
-		{
-			for(int j = 0;j<3;j++)
-			{
-				if(i==y && j==x){
-					cout<<"| "<<"X"<<" |";
-					
-				}else{
-					cout<<"| "<<tab[i][j]<<" |";
-					
-				}
 
-			}
-			cout<<endl;
-		}
-		getchar = getch();
-		switch(getchar)
-		{
-			case KEY_UP:
-				if(y>0)
-				{
-					--y;				
-				}
-				
-				
-				break;
-			case KEY_DOWN:
-				if(y<2)
-				{
-					++y;				
-				}
-				break;
-			case KEY_LEFT:
-				if(x>0)
-				{
-					--x;					
-				}
-				break;
-			case KEY_RIGHT:
-				if(x<2)
-				{
-					++x;					
-				}
-
-				break;
-			case 13:
-				cout<<tab[y][x];
-				return 0;
-				break;
-		}
-		
-	}while(x!=13);
 //	json xd = json::parse(f);
 	/*cout<<xd.at("nazwaUzytkownika").at(0)<<endl;
 	//xd["tytul"][1] = "xd2";
@@ -452,6 +440,6 @@ if(a[0]=="0")
 
 
 
-	system("pause");
+//	system("pause");
 	return 0;
 }
