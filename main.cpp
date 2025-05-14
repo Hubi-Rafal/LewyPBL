@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 using namespace std;
 
-/*
+
 class User
 {
 	private:
@@ -287,7 +287,7 @@ class Controller
 		/*!
 		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
 		*/
-/*		int start()
+		int start()
 		{
 			int wybor;
 			while(wybor!=4)
@@ -343,7 +343,7 @@ class Controller
 				
 		}
 			
-	*/
+	
 	private:
 		
 		Repertuar rp; /*!< Obiekt klasy Repertuar */
@@ -377,7 +377,7 @@ if(a[0]=="0")
 	int x=0,y=0;
 	do
 	{
-		system("cls");
+		cout<<"\x1B[9J\x1B[0;0f";
 		for(int i = 0;i<3;i++)
 		{	
 			for(int j = 0;j<3;j++)
