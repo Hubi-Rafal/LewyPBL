@@ -379,7 +379,7 @@ if(a[0]=="0")
 	{
 		cout<<"\x1B[9J\x1B[0;0f";
 		for(int i = 0;i<3;i++)
-		{	
+		{
 			for(int j = 0;j<3;j++)
 			{
 				if(i==y && j==x){
