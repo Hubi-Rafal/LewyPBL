@@ -26,9 +26,19 @@ class User
 		User()
 		{
 			f.open("uzytkownicy.json");
-			plik = json::parse(f);
-			zalogowany = false;
-			admin = false;
+            if(!f.is_open())
+            {
+                cout<<"Nie znaleziono pliku z uzytkownikami, zostanie on utworzony."<<endl;
+                ofstream outFile("uzytkownicy.json");
+                json emptyArray = json::array();
+                outFile << emptyArray;
+                outFile.close();
+            }else {
+                cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
+                plik = json::parse(f);
+                zalogowany = false;
+                admin = false;
+            }
 		}
 	
 		string login()
@@ -110,11 +120,7 @@ class User
 					}
 				}
 			}
-			
-            
-            	
-			
-			
+
 			cout << "Podaj haslo: ";
             cin >> password;
             cout<<"\x1B[1J\x1B[0;0f";
@@ -129,10 +135,18 @@ class User
             plik.push_back(newUser);
 
             // Zapisanie obiektu JSON do pliku
-            f.close(); // Zamknięcie pliku w trybie odczytu
+            //f.close(); // Zamknięcie pliku w trybie odczytu
             ofstream outFile("uzytkownicy.json");
-            outFile << setw(4) << plik;
-            outFile.close();
+            if (!outFile.is_open()) {
+                cerr << "Nie można otworzyć pliku do zapisu." << endl;
+                return;
+            }else
+            {
+                outFile << setw(4) << plik;
+                outFile.close();
+                cout<<"Zarejestrowano pomyslnie, witaj w CineBooker!"<<endl;
+            }
+
         }
 };
 
@@ -243,7 +257,16 @@ class Repertuar
 		Repertuar()
 		{
 			f.open("repertuar.json");
-			plik = json::parse(f);
+            if(!f.is_open())
+            {
+                cout<<"Nie znaleziono pliku z repertuarem, zostanie on utworzony."<<endl;
+                ofstream outFile("repertuar.json");
+                json emptyArray = json::array();
+                outFile << emptyArray;
+                outFile.close();
+            }else {
+                plik = json::parse(f);
+            }
 		}
 		
 		~Repertuar()
