@@ -221,7 +221,7 @@ class User
 						}
 					}else
 					{
-						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie"<<endl;
+						cout<<"Nie znaleziono podanej nazwy użytkownika, spróbuj ponownie"<<endl;
 					}
 				}
 			}
@@ -241,7 +241,6 @@ class User
         	cout<<"Wylogowano pomyślnie."<<endl;
 		}
 
-
         //! Funkcja registration()
         /*!
          * Funkcja rejestruje nowego użytkownika w systemie. Użytkownik musi podać unikalną nazwę użytkownika i hasło.
@@ -254,21 +253,19 @@ class User
             cout << "Podaj nazwę użytkownika: ";
             cin >> username;
             
-			int flag;
+			int flag = 0;
             for(auto element : uzytkownicy)
             {
-
 	            if(username==element["username"])
 	            {
 	            	flag = 1;
 				}
-            	
 			}
 			
 			while(flag == 1)
 			{
 				cin.clear();
-	        	cout << "Ta nazwa uzytkownika jest zajeta. "<<endl<<"Podaj nazwe uzytkownika: ";
+	        	cout << "Ta nazwa użytkownika jest zajęta. "<<endl<<"Podaj nazwę użytkownika: ";
     		    cin >> username;
 				for(auto element : uzytkownicy)
 				{
@@ -282,11 +279,10 @@ class User
 				}
 			}
 
-			cout << "Podaj haslo: ";
+			cout << "Podaj hasło: ";
             cin >> password;
             cout<<"\x1B[1J\x1B[0;0f";
-			
-			
+
             // Dodanie nowego użytkownika do obiektu JSON
             json newUser = {
                 {"username", username},
@@ -295,41 +291,37 @@ class User
             };
             uzytkownicy.push_back(newUser);
 
-            // Zapisanie obiektu JSON do pliku
-            //f.close(); // Zamknięcie pliku w trybie odczytu
             ofstream outFile("uzytkownicy.json");
 
             if (!outFile.is_open()) {
                 cerr << "Nie można otworzyć pliku do zapisu." << endl;
-                //return 0;
             }else
             {
                 outFile << setw(4) << uzytkownicy;
                 outFile.close();
                 this->username = username;
                 zalogowany = true;
-                cout<<"Zarejestrowano pomyslnie, witaj w CineBooker!"<<endl;
+                cout<<"Zarejestrowano pomyślnie, witaj w CineBooker!"<<endl;
             }
-            
-//            return 0;
-
-
         }
-        
-        
+
+        //! Funkcja wyswietlRezerwacje()
+        /*!
+         * Funkcja przeszukuje plik rezerwacje.json i wyświetla wszystkie rezerwacje przypisane do zalogowanego użytkownika.
+         * Następnie pozwala użytkownikowi anulować rezerwację podając jej ID.
+         */
         void wyswietlRezerwacje()
         {
         	system("cls");
         	rz.open("rezerwacje.json");
         	rt.open("repertuar.json");
         	json repertuar = json::parse(rt);
-        	json rezerwacje = json::parse(rz);
+        	rezerwacje = json::parse(rz);
  			int i = 0;
         	for(auto element : rezerwacje)
         	{
         		if(element["username"]==this->username)
         		{
-					
 					for(auto film : repertuar)
 					{
 						if(element["idSeansu"] == film["id"])
@@ -357,8 +349,7 @@ class User
 				cin.ignore(40,'\n');
 				cout<<">";
 			}
-			
-			
+
 			if(delNumber == 0)
 			{
 				rz.close();
@@ -389,18 +380,23 @@ class User
 								
 						x++;
 					}
-						
 				}
-				
-				
+
 				rz.close();
 				
 				ofstream o("rezerwacje.json");
-				o<<setw(4)<<owRezerwacje;
-				o.close();
+                if (!o.is_open()) {
+                    cerr << "Nie można otworzyć pliku do zapisu." << endl;
+                }
+                else
+                {
+                    o<<setw(4)<<owRezerwacje;
+                    o.close();
+                    system("cls");
+                    cout<<"Anulowano rezerwację o ID: "<<delNumber<<endl;
+                    system("pause");
+                }
 			}
-
-
 			system("pause");
 		}
 };
