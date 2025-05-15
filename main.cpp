@@ -3,12 +3,16 @@
 #include <windows.h>
 #include <conio.h>
 #include "nlohmann/json.hpp"
+using json = nlohmann::json;
+//!Biblioteka nlholmann/json.hpp
+/*!
+ * Biblioteka do obsługi plików JSON w C++
+ */
 
 #define KEY_UP 72
 #define KEY_DOWN 80
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
-using json = nlohmann::json;
 
 using namespace std;
 
@@ -27,25 +31,34 @@ class User
 		string username;
 		bool admin;
 		bool zalogowany;
-		
+
+        //! Konstruktor klasy User
+        /*!
+         * Konstruktor klasy User otwiera plik z użytkownikami i sprawdza, czy istnieje. Jeśli nie, tworzy nowy plik.
+         * Jeśli plik otworzy się poprawnie, to wczytuje dane do obiektu JSON. i ustawia zmienne zalogowany i admin na false.
+         */
 		User()
 		{
 			users.open("uzytkownicy.json");
 			
             if(!users.is_open())
             {
-                cout<<"Nie znaleziono pliku z uzytkownikami, zostanie on utworzony."<<endl;
+                cout<<"Nie znaleziono pliku z użytkownikami, zostanie on utworzony."<<endl;
                 ofstream outFile("uzytkownicy.json");
                 json emptyArray = json::array();
                 outFile << emptyArray;
                 outFile.close();
             }else{
-            //    cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
                 uzytkownicy = json::parse(users);
                 zalogowany = false;
                 admin = false;
             }
 		}
+
+        //! Destruktor klasy User
+        /*!
+         * Destruktor klasy User zamyka pliki z użytkownikami, rezerwacjami i repertuarem.
+         */
 		~User()
 		{
 			rt.close();
@@ -53,6 +66,12 @@ class User
 			users.close();
 		}
 
+        //! Funkcja dodajFilm()
+        /*!
+         * Funkcja dodaje nowy film do repertuaru. Użytkownik musi być administratorem, aby móc dodać film.
+         * Funkcja pobiera dane filmu od użytkownika, tworzy nowy obiekt JSON i dodaje go do repertuaru.
+         * Następnie zapisuje zmiany do pliku repertuar.json wraz z unikalnym id.
+         */
 		void dodajFilm()
 		{
 			rt.open("repertuar.json");
@@ -65,16 +84,16 @@ class User
 			string tytul, typ, jezyk, godzina;
 			int id;
 			cout<<"Podaj dane nowego seansu."<<endl;
-			cout<<"Tytul: ";
+			cout<<"Tytuł: ";
 			string x,y;			// zmienne do getline linie nizej
-			getline(cin,y);		// dummy getline bo jak getline(cin,tytul) nie ma kolegi to dostaje pierdolca
+			getline(cin,y);		// dummy getline bo jak getline(cin,tytul) nie ma kolegi to dostaje pierdolca // prawdopodobnie coś z buforem
 			
 			getline(cin,tytul);
 			cout<<"Typ (2d/3d): ";
 			getline(cin,typ);
 			cout<<"Język: ";
 			getline(cin,jezyk);
-			cout<<"Godzina Rozpoczecia: ";
+			cout<<"Godzina Rozpoczęcia: ";
 			getline(cin,godzina);
 
 			int max = 0;
@@ -102,7 +121,13 @@ class User
 			rt.close();
 			o.close();
 		}
-		
+
+        //! Funkcja usunFilm()
+        /*!
+         * Funkcja usuwa film z repertuaru. Użytkownik musi być administratorem, aby móc usunąć film.
+         * Funkcja wyświetla dostępne filmy z pliku repertuar.json i pozwala użytkownikowi wybrać film do usunięcia.
+         * Następnie zapisuje zmiany do pliku.
+         */
 		void usunFilm()
 		{
 			rt.open("repertuar.json");
@@ -158,20 +183,18 @@ class User
 			
 		}
 			
-	//! Funkcja login()
-	/*!
-	*
-	* Służy do umożliwienia
-	*
-	*/
+        //! Funkcja login()
+        /*!
+         * Funkcja loguje użytkownika do systemu. Użytkownik musi podać poprawną nazwę użytkownika i hasło.
+         * Jeśli dane są poprawne, użytkownik zostaje zalogowany i może korzystać z systemu.
+         * Jeśli dane są niepoprawne, użytkownik zostaje poproszony o ponowne podanie danych.
+         */
 		void login()
         {
         	system("cls");
-            //cout<<"\x1B[9J\x1B[0;0f";
            	string us, pass;
-           	cout<<"LOGOWANIE"<<endl<<"Proszę wpisać nazwę uzytkownika"<<endl;
-			int found = 0;
-			while(1 == 1)
+           	cout<<"LOGOWANIE"<<endl<<"Proszę wpisać nazwę użytkownika"<<endl<<">";
+            while(1 == 1)
 			{
 				cout<<">";
 				cin>>us;
@@ -180,13 +203,11 @@ class User
 					system("cls");
 					if(element["username"] == us)
 					{
-						
-					 	
 						while(!(pass == element["password"]))
 						{
 							system("cls");
 		
-							cout<<"Nazwa użytkownika rozpoznana, podaj haslo"<<endl<<">";
+							cout<<"Nazwa użytkownika rozpoznana, podaj hasło"<<endl<<">";
 							cin>>pass;
 
 							if(pass == element["password"])
@@ -199,22 +220,22 @@ class User
 									admin = true;
 									return;
 								}
-
 								return;
-								break;
 							}
 						}
 					}else
 					{
 						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie"<<endl;
 					}
-					
-				
 				}
 			}
-
-
         }
+
+        //! Funkcja logout()
+        /*!
+         * Funkcja wylogowuje użytkownika z systemu. Użytkownik zostaje przeniesiony do menu głównego.
+         * Zmienne zalogowany , admin i username są resetowane.
+         */
         void logout()
         {
         	zalogowany = false;
@@ -223,11 +244,18 @@ class User
         	system("cls");
         	cout<<"Wylogowano pomyślnie."<<endl;
 		}
-		
+
+
+        //! Funkcja registration()
+        /*!
+         * Funkcja rejestruje nowego użytkownika w systemie. Użytkownik musi podać unikalną nazwę użytkownika i hasło.
+         * Jeśli nazwa użytkownika jest już zajęta, użytkownik zostaje poproszony o podanie innej.
+         * Nowy użytkownik zostaje dodany do pliku uzytkownicy.json.
+         */
         void registration()
         {
-            string username, password;
-            cout << "Podaj nazwe uzytkownika: ";
+            string password;
+            cout << "Podaj nazwę użytkownika: ";
             cin >> username;
             
 			int flag;
