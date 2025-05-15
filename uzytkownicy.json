@@ -1,32 +1,27 @@
 [
     {
         "admin": false,
-        "password": "123",
+        "password": "haslo123",
         "username": "user1"
     },
     {
         "admin": false,
-        "password": "345",
+        "password": "haslo456",
         "username": "user2"
     },
     {
         "admin": true,
-        "password": "678",
+        "password": "admin",
         "username": "admin"
     },
     {
-        "admin": false,
-        "password": "1324",
-        "username": "user4"
+        "admin": true,
+        "password": "kino",
+        "username": "Kierownik"
     },
     {
         "admin": false,
-        "password": "321",
-        "username": "user5"
-    },
-    {
-        "admin": false,
-        "password": "abc",
-        "username": "ABC"
+        "password": "adam",
+        "username": "adam"
     }
 ]

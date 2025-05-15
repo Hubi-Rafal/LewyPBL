@@ -1,16 +1,37 @@
 [
     {
-        "godzina": "12 30",
+        "godzina": "12:30",
         "id": 1,
         "jezyk": "Polski",
         "typ": "2d",
-        "tytul": "Film 1"
+        "tytul": "Film"
     },
     {
-        "godzina": "21 37",
+        "godzina": "21:37",
         "id": 2,
         "jezyk": "Angielski",
         "typ": "3d",
         "tytul": "Film 2"
+    },
+    {
+        "godzina": "15:00",
+        "id": 3,
+        "jezyk": "Polski",
+        "typ": "2d",
+        "tytul": "Film: początek"
+    },
+    {
+        "godzina": "18:00",
+        "id": 4,
+        "jezyk": "Angielski",
+        "typ": "3d",
+        "tytul": "How to Train Your Chicken"
+    },
+    {
+        "godzina": "20:30",
+        "id": 5,
+        "jezyk": "Polski",
+        "typ": "2d",
+        "tytul": "Indian Jones"
     }
 ]
