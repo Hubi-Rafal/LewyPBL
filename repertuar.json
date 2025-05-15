@@ -1,37 +1,16 @@
 [
     {
-        "godzina": "4",
+        "godzina": "12 30",
         "id": 1,
-        "jezyk": "3",
-        "typ": "2",
-        "tytul": "1"
+        "jezyk": "Polski",
+        "typ": "2d",
+        "tytul": "Film 1"
     },
     {
-        "godzina": "4",
+        "godzina": "21 37",
         "id": 2,
-        "jezyk": "3",
-        "typ": "2",
-        "tytul": "1"
-    },
-    {
-        "godzina": "d",
-        "id": 3,
-        "jezyk": "c",
-        "typ": "b",
-        "tytul": "a"
-    },
-    {
-        "godzina": "7",
-        "id": 4,
-        "jezyk": "56",
-        "typ": "4",
-        "tytul": "3"
-    },
-    {
-        "godzina": "gh",
-        "id": 5,
-        "jezyk": "ef",
-        "typ": "cd",
-        "tytul": "ab"
+        "jezyk": "Angielski",
+        "typ": "3d",
+        "tytul": "Film 2"
     }
 ]

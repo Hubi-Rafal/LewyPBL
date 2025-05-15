@@ -40,7 +40,7 @@ class User
                 outFile << emptyArray;
                 outFile.close();
             }else{
-                cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
+            //    cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
                 uzytkownicy = json::parse(users);
                 zalogowany = false;
                 admin = false;
@@ -64,16 +64,18 @@ class User
 			
 			string tytul, typ, jezyk, godzina;
 			int id;
-			
 			cout<<"Podaj dane nowego seansu."<<endl;
 			cout<<"Tytul: ";
-			cin>>tytul;
+			string x,y;			// zmienne do getline linie nizej
+			getline(cin,y);		// dummy getline bo jak getline(cin,tytul) nie ma kolegi to dostaje pierdolca
+			
+			getline(cin,tytul);
 			cout<<"Typ (2d/3d): ";
-			cin>>typ;
+			getline(cin,typ);
 			cout<<"Język: ";
-			cin>>jezyk;
+			getline(cin,jezyk);
 			cout<<"Godzina Rozpoczecia: ";
-			cin>>godzina;
+			getline(cin,godzina);
 
 			int max = 0;
 			for(auto element : repertuar)
@@ -167,7 +169,7 @@ class User
         	system("cls");
             //cout<<"\x1B[9J\x1B[0;0f";
            	string us, pass;
-           	cout<<"Prosze wpisac nazwe uzytkownika"<<endl;
+           	cout<<"LOGOWANIE"<<endl<<"Proszę wpisać nazwę uzytkownika"<<endl;
 			int found = 0;
 			while(1 == 1)
 			{
@@ -184,7 +186,7 @@ class User
 						{
 							system("cls");
 		
-							cout<<"znaleziono username, podaj haslo"<<endl<<">";
+							cout<<"Nazwa użytkownika rozpoznana, podaj haslo"<<endl<<">";
 							cin>>pass;
 
 							if(pass == element["password"])
@@ -204,7 +206,7 @@ class User
 						}
 					}else
 					{
-						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie nobie"<<endl;
+						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie"<<endl;
 					}
 					
 				
@@ -309,7 +311,7 @@ class User
 						if(element["idSeansu"] == film["id"])
 						{	
 							cout<<"############# Rezerwacja #"<<element["id"]<<" #############"<<endl;
-							cout<<"#  Tytul elementu: "<<film["tytul"]<<endl;
+							cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
 							cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
 							cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
 							cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
@@ -393,28 +395,9 @@ class Repertuar
 		
 	public:
 		ifstream rz;
-		ifstream f;
+		ifstream rp;
 		fstream o;
-		json plik;
-		Repertuar()
-		{
-			f.open("repertuar.json");
-            if(!f.is_open())
-            {
-                cout<<"Nie znaleziono pliku z repertuarem, zostanie on utworzony."<<endl;
-                ofstream outFile("repertuar.json");
-                json emptyArray = json::array();
-                outFile << emptyArray;
-                outFile.close();
-            }else {
-                plik = json::parse(f);
-            }
-		}
 		
-		~Repertuar()
-		{
-			f.close();
-		} 
 		
 		//! Funkcja wyswietlRepertuar
 		/*!
@@ -424,19 +407,16 @@ class Repertuar
 		*/
 		void wyswietlRepertuar(User* u)
 		{	
-			
+			rp.open("repertuar.json");
+            json repertuar = json::parse(rp);
 					
 			cout<<"=========== REPERTUAR ============="<<endl<<endl;
 			
-	//		plik[3]["tytul"] = "XD"; //
-	//		o.open("repertuar.json");// 	tu jest zapisywanie do pliku
-	//		o<<setw(4)<<plik;		 // 
-
 			int i = 0;
-			for(auto film : plik)
+			for(auto film : repertuar)
 			{
 				cout<<"############# Seans #"<<film["id"]<<" #############"<<endl;
-				cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
+				cout<<"#  Tytuł filmu: "<<film["tytul"]<<endl;
 				cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
 				cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
 				cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
@@ -445,7 +425,7 @@ class Repertuar
 			}
 			int seans;
 			cout<<"Wybierz numer seansu na który chcesz kupić bilet. Wpisz '0' aby wrócić do menu"<<endl<<">";
-			
+			rp.close();
 			while(!(cin>>seans) || (seans<0 || seans>i))
 			{
 				cin.clear();
