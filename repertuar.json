@@ -1,51 +1,37 @@
 [
     {
-        "godzina": "12:30",
+        "godzina": "4",
         "id": 1,
-        "jezyk": "Polski",
-        "typ": "2d",
-        "tytul": "Film1"
+        "jezyk": "3",
+        "typ": "2",
+        "tytul": "1"
     },
     {
-        "godzina": "21:37",
+        "godzina": "4",
         "id": 2,
-        "jezyk": "angielski",
-        "typ": "3d",
-        "tytul": "Film2"
-    },
-    {
-        "godzina": "7:35",
-        "id": 3,
-        "jezyk": "chujowy, co sie interesujesz",
-        "typ": "4d",
-        "tytul": "Film3"
+        "jezyk": "3",
+        "typ": "2",
+        "tytul": "1"
     },
     {
         "godzina": "d",
-        "id": 4,
+        "id": 3,
         "jezyk": "c",
         "typ": "b",
         "tytul": "a"
     },
     {
-        "godzina": "37",
+        "godzina": "7",
+        "id": 4,
+        "jezyk": "56",
+        "typ": "4",
+        "tytul": "3"
+    },
+    {
+        "godzina": "gh",
         "id": 5,
-        "jezyk": "21",
-        "typ": "pl",
-        "tytul": "cwel"
-    },
-    {
-        "godzina": "xdxd",
-        "id": 6,
-        "jezyk": "rongo",
-        "typ": "rango",
-        "tytul": "ringo"
-    },
-    {
-        "godzina": "3",
-        "id": 7,
-        "jezyk": "2",
-        "typ": "1",
-        "tytul": "xd"
+        "jezyk": "ef",
+        "typ": "cd",
+        "tytul": "ab"
     }
 ]

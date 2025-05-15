@@ -21,7 +21,7 @@ class User
 		fstream rt;
 		json uzytkownicy;
 		json rezerwacje;
-		json repertuar;
+	
 	
 	public:
 		string username;
@@ -31,7 +31,7 @@ class User
 		User()
 		{
 			users.open("uzytkownicy.json");
-			rt.open("repertuar.json");
+			
             if(!users.is_open())
             {
                 cout<<"Nie znaleziono pliku z uzytkownikami, zostanie on utworzony."<<endl;
@@ -42,7 +42,6 @@ class User
             }else{
                 cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
                 uzytkownicy = json::parse(users);
-                repertuar = json::parse(rt);
                 zalogowany = false;
                 admin = false;
             }
@@ -56,7 +55,8 @@ class User
 
 		void dodajFilm()
 		{
-			
+			rt.open("repertuar.json");
+			json repertuar = json::parse(rt);
 			if(admin==false)
 			{
 				return;
@@ -81,6 +81,7 @@ class User
 				if(element["id"]>max)
 				{
 					max=element["id"];
+					
 				}
 			}
 			id = max+1;
@@ -96,8 +97,65 @@ class User
 			
 			ofstream o("repertuar.json");
 			o<<setw(4)<<repertuar;
-		
+			rt.close();
+			o.close();
 		}
+		
+		void usunFilm()
+		{
+			rt.open("repertuar.json");
+			json repertuar = json::parse(rt);
+			if(admin==false)
+			{
+				return;
+			}
+			
+			for(auto film : repertuar)
+			{
+				
+				cout<<"############# Seans #"<<film["id"]<<" #############"<<endl;
+				cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
+				cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
+				cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
+				cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
+				cout<<"####################################"<<endl<<endl;
+			}
+			int delNumber;
+			cout<<"Podaj numer seansu który chcesz usunąć."<<endl<<">";
+			while(!(cin>>delNumber))
+			{
+				cin.clear();
+				cin.ignore(40,'\n');
+				cout<<">";
+			}
+			
+			json owFilmy;
+				for(auto film : repertuar)
+				{
+					if(film["id"]==delNumber)
+					{							
+						film["id"] = nullptr;
+					}
+					if(!(film["id"] == nullptr))
+					{
+						json newFilm = {
+							{"id",film["id"]},
+							{"godzina",film["godzina"]},
+							{"jezyk",film["jezyk"]},
+							{"tytul",film["tytul"]},
+							{"typ",film["typ"]}
+						};
+						owFilmy.push_back(newFilm);
+								
+					}
+						
+				}
+				rt.close();
+				ofstream o("repertuar.json");
+				o<<setw(4)<<owFilmy;
+			
+		}
+			
 	//! Funkcja login()
 	/*!
 	*
@@ -160,7 +218,8 @@ class User
         	zalogowany = false;
         	admin = false;
         	username = "";
-        	cout<<"logout";
+        	system("cls");
+        	cout<<"Wylogowano pomyślnie."<<endl;
 		}
 		
         void registration()
@@ -236,6 +295,8 @@ class User
         {
         	system("cls");
         	rz.open("rezerwacje.json");
+        	rt.open("repertuar.json");
+        	json repertuar = json::parse(rt);
         	json rezerwacje = json::parse(rz);
  			int i = 0;
         	for(auto element : rezerwacje)
@@ -252,12 +313,14 @@ class User
 							cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
 							cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
 							cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
+							cout<<"#  Miejsce: "<<element["miejsce"]<<endl;				
 							cout<<"####################################"<<endl<<endl;
 							i++;
 						}						
 					}
 				}
 			}
+			rt.close();
 			int delNumber;
 			cout<<"Czy chcesz anulować którąś z rezerwacji?"<<endl<<"[X] - Anuluj rezerwację o podanym numerze."<<endl<<"[0] -- Wróć do menu głównego."<<endl;
 			cout<<this->username<<">";
@@ -270,7 +333,7 @@ class User
 			}
 			
 			
-			if(delNumber == 00)
+			if(delNumber == 0)
 			{
 				rz.close();
 				return;
@@ -302,21 +365,6 @@ class User
 					}
 						
 				}
-				
-			/*	for(auto  element: rezerwacje)
-				{
-					cout<<element["id"];
-					if(!(element["id"] == nullptr))
-					{
-						json newRezerwacja = {
-							{"id",element["id"]},
-							{"username",element["username"]},
-							{"idSeansu",element["idSeansu"]},
-							{"miejsce",element["miejsce"]}
-						};
-						owRezerwacje.push_back(newRezerwacja);
-					}
-				}*/
 				
 				
 				rz.close();
@@ -622,19 +670,24 @@ class Controller
 					cout<<"[3] -- Przegladaj repertuar"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
 					cout<<">";
-					cin>>wybor;
+					while(!(cin>>wybor))
+					{
+						cin.clear();
+						cin.ignore(40,'\n');
+						cout<<">";
+					}
 					switch(wybor)
 					{
 						case 1:
 							u.login();
 							break;
 						case 2:
+							system("cls");
 							u.registration();
-							
-							
 							break;
 							
 						case 3:
+							system("cls");
 							rp.wyswietlRepertuar(&u);
 							break;
 					}	
@@ -642,12 +695,18 @@ class Controller
 				{
 					system("cls");
 					cin.clear();
-					cout<<"Hello admin"<<endl;
+					cout<<"Panel administratora CineBooker"<<endl;
 					cout<<"[1] -- Wyloguj"<<endl;
 					cout<<"[2] -- Dodaj film"<<endl;
+					cout<<"[3] -- Usuń film"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
 					cout<<u.username<<">";
-					cin>>wybor;
+					while(!(cin>>wybor))
+					{
+						cin.clear();
+						cin.ignore(40,'\n');
+						cout<<">";	
+					}
 					switch(wybor)
 					{
 						case 1:
@@ -655,7 +714,12 @@ class Controller
 
 							break;
 						case 2:
+							system("cls");
 							u.dodajFilm();
+							break;
+						case 3:
+							system("cls");
+							u.usunFilm();
 							break;
 
 						case 4:
@@ -666,18 +730,25 @@ class Controller
 				{
 					system("cls");
 					cin.clear();
+					cout<<"Panel użytkownika CineBooker."<<endl;
 					cout<<"[1] -- Wyloguj"<<endl;
 					cout<<"[2] -- Przegladaj repertuar"<<endl;
-					cout<<"[3] -- Rezerwacje"<<endl;
+					cout<<"[3] -- Twoje Rezerwacje"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
 					cout<<u.username<<">";
-					cin>>wybor;
+					while(!(cin>>wybor))
+					{
+						cin.clear();
+						cin.ignore(40,'\n');
+						cout<<">";
+					}
 					switch(wybor)
 					{
 						case 1:
 							u.logout();
 							break;
 						case 2:
+							system("cls");
 							rp.wyswietlRepertuar(&u);
 							break;
 						case 3:

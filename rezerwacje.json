@@ -2,31 +2,7 @@
     {
         "id": 1,
         "idSeansu": 5,
-        "miejsce": 2,
-        "username": "user1"
-    },
-    {
-        "id": 2,
-        "idSeansu": 6,
-        "miejsce": 36,
-        "username": "user1"
-    },
-    {
-        "id": 3,
-        "idSeansu": 6,
-        "miejsce": 14,
-        "username": "user2"
-    },
-    {
-        "id": 4,
-        "idSeansu": 6,
-        "miejsce": 4,
-        "username": "user1"
-    },
-    {
-        "id": 5,
-        "idSeansu": 3,
-        "miejsce": 9,
+        "miejsce": 24,
         "username": "user2"
     }
 ]
