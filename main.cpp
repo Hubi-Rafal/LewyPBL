@@ -16,9 +16,9 @@ using namespace std;
 class User
 {
 	private:
-
-		fstream f;
-		json plik;
+		fstream rz;
+		fstream users;
+		json uzytkownicy;
 
 	
 	public:
@@ -28,9 +28,9 @@ class User
 		
 		User()
 		{
-
-			f.open("uzytkownicy.json");
-            if(!f.is_open())
+			rz.open("rezerwacje.json");
+			users.open("uzytkownicy.json");
+            if(!users.is_open())
             {
                 cout<<"Nie znaleziono pliku z uzytkownikami, zostanie on utworzony."<<endl;
                 ofstream outFile("uzytkownicy.json");
@@ -39,7 +39,8 @@ class User
                 outFile.close();
             }else{
                 cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
-                plik = json::parse(f);
+                uzytkownicy = json::parse(users);
+                rezerwacje = json::parse(rz);
                 zalogowany = false;
                 admin = false;
             }
@@ -47,12 +48,48 @@ class User
 
 		void dodajFilm()
 		{
+			ifstream f("repertuar.json");
+			json plik = json::parse(f);
 			if(admin==false)
 			{
 				return;
 			}
-			cout<<"Podaj tytuł nowego filmu."<<endl<<">";
+			
+			string tytul, typ, jezyk, godzina;
+			int id;
+			
+			cout<<"Podaj dane nowego seansu."<<endl;
+			cout<<"Tytul: ";
+			cin>>tytul;
+			cout<<"Typ (2d/3d): ";
+			cin>>typ;
+			cout<<"Język: ";
+			cin>>jezyk;
+			cout<<"Godzina Rozpoczecia: ";
+			cin>>godzina;
 
+			int max = 0;
+			for(auto element : plik)
+			{
+				if(element["id"]>max)
+				{
+					max=element["id"];
+				}
+			}
+			id = max+1;
+			json newSeans = {
+				{"id",id},
+				{"tytul",tytul},
+				{"typ",typ},
+				{"godzina",godzina},
+				{"jezyk",jezyk}
+			};
+			plik.push_back(newSeans);
+			
+			
+			ofstream o("repertuar.json");
+			o<<setw(4)<<plik;
+		
 		}
 	//! Funkcja login()
 	/*!
@@ -67,15 +104,16 @@ class User
            	string us, pass;
            	cout<<"Prosze wpisac nazwe uzytkownika"<<endl;
 			int found = 0;
-			while(found == 0)
+			while(1 == 1)
 			{
 				cout<<">";
 				cin>>us;
-				for(auto element : plik)
+				for(auto element : uzytkownicy)
 				{
 					system("cls");
 					if(element["username"] == us)
 					{
+						
 					 	
 						while(!(pass == element["password"]))
 						{
@@ -95,7 +133,7 @@ class User
 									return;
 								}
 
-
+								return;
 								break;
 							}
 						}
@@ -103,10 +141,9 @@ class User
 					{
 						cout<<"Nie znaleziono podanej nazwy uzytkownika, sprobuj ponownie nobie"<<endl;
 					}
-
-
+					
+				
 				}
-				return;
 			}
 
 
@@ -118,6 +155,7 @@ class User
         	username = "";
         	cout<<"logout";
 		}
+		
         void registration()
         {
             string username, password;
@@ -125,7 +163,7 @@ class User
             cin >> username;
             
 			int flag;
-            for(auto element : plik)
+            for(auto element : uzytkownicy)
             {
 
 	            if(username==element["username"])
@@ -140,7 +178,7 @@ class User
 				cin.clear();
 	        	cout << "Ta nazwa uzytkownika jest zajeta. "<<endl<<"Podaj nazwe uzytkownika: ";
     		    cin >> username;
-				for(auto element : plik)
+				for(auto element : uzytkownicy)
 				{
 					if(username == element["username"])
 					{
@@ -163,7 +201,7 @@ class User
                 {"password", password},
                 {"admin", nullptr}
             };
-            plik.push_back(newUser);
+            uzytkownicy.push_back(newUser);
 
             // Zapisanie obiektu JSON do pliku
             //f.close(); // Zamknięcie pliku w trybie odczytu
@@ -174,7 +212,7 @@ class User
                 //return 0;
             }else
             {
-                outFile << setw(4) << plik;
+                outFile << setw(4) << uzytkownicy;
                 outFile.close();
                 zalogowany = true;
                 cout<<"Zarejestrowano pomyslnie, witaj w CineBooker!"<<endl;
@@ -184,6 +222,24 @@ class User
 
 
         }
+        
+        
+        void wyswietlRezerwacje()
+        {
+        	for(auto element : rezerwacje)
+        	{
+        		if(element["username"]==this->username)
+        		{        				
+				
+					cout<<"############# Seans #"<<film["id"]<<" #############"<<endl;
+					cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
+					cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
+					cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
+					cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
+					cout<<"####################################"<<endl<<endl;
+				}
+			}
+		}
 };
 
 
@@ -201,11 +257,13 @@ class Repertuar
 	public:
 		
 		ifstream f;
-		ofstream o;
+		fstream o;
 		json plik;
-		
+		json rezerwacje;
 		Repertuar()
 		{
+			r.open("rezerwacje.json");
+			rezerwacje = json::parse(r);
 			f.open("repertuar.json");
             if(!f.is_open())
             {
@@ -222,6 +280,7 @@ class Repertuar
 		~Repertuar()
 		{
 			f.close();
+			r.close();
 		} 
 		
 		//! Funkcja wyswietlRepertuar
@@ -230,7 +289,7 @@ class Repertuar
 		* Funkcja która wypisuje w konsoli informacje o aktualnym  repertuarze sali kinowej. Na chwilę obecną informacje te stanowią: Tytuł filmu, Godzina rozpoczęcia seansu, Język filmu oraz jego typ (2d lub 3d)
 		*
 		*/
-		void wyswietlRepertuar()
+		void wyswietlRepertuar(User* u)
 		{	
 			
 					
@@ -243,29 +302,46 @@ class Repertuar
 			int i = 0;
 			for(auto film : plik)
 			{
-				cout<<"############# Seans #"<<i+1<<" #############"<<endl;
+				cout<<"############# Seans #"<<film["id"]<<" #############"<<endl;
 				cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
 				cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
-				cout<<"#  Jezyk: "<<film["Jezyk"]<<endl;
+				cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
 				cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
 				cout<<"####################################"<<endl<<endl;
 				i++;
 			}
-			
-			int wybor;
+			int seans;
 			cout<<"Wybierz numer seansu na który chcesz kupić bilet. Wpisz '0' aby wrócić do menu"<<endl<<">";
 			
-			while(!(cin>>wybor))
+			while(!(cin>>seans) || (seans<0 || seans>i))
 			{
 				cin.clear();
 				cin.ignore(40,'\n');
 				cout<<">";
-			};
-
+					
+			
+			}
+			if(seans==0)
+			{
+				system("cls");
+				return;
+			}else{
+				if(u->zalogowany == true)
+				{
+					this->wybierzMiejsca(u,seans);			
+				}else
+				{
+					u->login();
+					this->wybierzMiejsca(u,seans);
+				}
+				
+			}
 			
 
 						
 		}
+		
+		
 		
 		//! Funkcja wybierzMiejsca
 		/*!
@@ -273,7 +349,13 @@ class Repertuar
 		* Funkcja umożliwiająca użytkownikowi zarezerwowanie miejsca na wybranym seansie
 		*
 		*/
-		void wybierzMiejsca(int zalogowany)
+		
+				
+	private:
+		ifstream r;
+		
+		
+		void wybierzMiejsca(User* u,int seans)
 		{
             int miejsce;
 
@@ -292,72 +374,114 @@ class Repertuar
             int getchar;
             int polozenie[0][0];
             int x=0,y=0;
-            do
+          
+		bool clear = false, fst = true;
+		while(clear==false)
+		{
+			
+		    do
             {
                 system("cls");
                 cout << "  ================== EKRAN ====================" << endl << endl;
-                for(int i = 0;i<y1;i++)
-                {
-                    for(int j = 0;j<x1;j++)
-                    {
-                        if(i==y && j==x){
-                            cout<<"|==X==|";
-                        }else if (tab[i][j] < 10){
-                            cout<<"|  "<<tab[i][j]<<"  |";
-                        }else if(tab[i][j] < 100){
-                            cout<<"|  "<<tab[i][j]<<" |";
-                        }else{
-                            cout<<"| "<<tab[i][j]<<" |";
-                        }
-                    }
-                    cout<<endl;
-                }
-                getchar = getch();
-
-                switch(getchar)
-                {
-                    case KEY_UP:
-                        if(y>0)
-                        {
-                            --y;
-                        }
-                        break;
-                    case KEY_DOWN:
-                        if(y<y1-1)
-                        {
-                            ++y;
-                        }
-                        break;
-                    case KEY_LEFT:
-                        if(x>0)
-                        {
-                            --x;
-                        }
-                        break;
-                    case KEY_RIGHT:
-                        if(x<x1-1)
-                        {
-                            ++x;
-                        }
-                        break;
-                    case 13:
-                        miejsce = tab[y][x];
-                        break;
-                }
-            }while(getchar!=13);
+              
+				    for(int i = 0;i<y1;i++)
+	                {
+	                    for(int j = 0;j<x1;j++)
+	                    {
+	                        if(i==y && j==x){
+	                            cout<<"|==X==|";
+	                        }else if (tab[i][j] < 10){
+	                            cout<<"|  "<<tab[i][j]<<"  |";
+	                        }else if(tab[i][j] < 100){
+	                            cout<<"|  "<<tab[i][j]<<" |";
+	                        }else{
+	                            cout<<"| "<<tab[i][j]<<" |";
+	                        }
+	                    }
+	                    cout<<endl;
+	                }
+	                if(fst == false)
+	                {
+	                	fst=true;
+	                	cout<<"Miejsce zajęte, proszę wybrać inne miejsce"<<endl;
+					}
+	                getchar = getch();
+	
+	                switch(getchar)
+	                {
+	                    case KEY_UP:
+	                        if(y>0)
+	                        {
+	                            --y;
+	                        }
+	                        break;
+	                    case KEY_DOWN:
+	                        if(y<y1-1)
+	                        {
+	                            ++y;
+	                        }
+	                        break;
+	                    case KEY_LEFT:
+	                        if(x>0)
+	                        {
+	                            --x;
+	                        }
+	                        break;
+	                    case KEY_RIGHT:
+	                        if(x<x1-1)
+	                        {
+	                            ++x;
+	                        }
+	                        break;
+	                    case 13:
+	                        miejsce = tab[y][x];
+	                        break;
+	                }
+	            }while(getchar!=13);
+	            
+			  	for(auto element : rezerwacje)
+			  	{
+			  		if(seans == element["idSeansu"] && miejsce == element["miejsce"])
+			  		{
+			  			fst = false;
+			  			clear = false;
+			  			break;
+					}else{
+						clear = true;
+					}
+				}
+			
+		}
             
             cout<<"Wybrane miejsce: "<<miejsce<<endl;
-            if(zalogowany == 0)
-            {
-//            	string username =
-			}
+            
+			this->rezerwacja(u,miejsce,seans);
 
-
-            system("pause");
+        }
+        
+        //! Funkcja rezerwacja
+		/*!
+		*
+		* Funkcja zapisująca rezerwację do  pliku rezerwacje.json
+		*
+		*/
+		void rezerwacja(User* u, int miejsce, int idSeansu)
+		{
+			
+			json newRezerwacja = {
+				{"username", u->username},
+				{"idSeansu", idSeansu},
+				{"miejsce", miejsce}
+			};
+			rezerwacje.push_back(newRezerwacja);
+			
+			ofstream o("rezerwacje.json");
+			
+			o<<setw(4)<<rezerwacje;
+			o.close();
+			system("pause");
+			
 		}
-		
-	private:
-		
 		
 };                      
 
@@ -382,7 +506,7 @@ class Controller
 		/*!
 		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
 		*/
-		int start()
+		void start()
 		{
 			int wybor;
 			User u;
@@ -411,7 +535,7 @@ class Controller
 							break;
 							
 						case 3:
-							rp.wyswietlRepertuar();
+							rp.wyswietlRepertuar(&u);
 							break;
 					}	
 				}else if(u.admin == true)
@@ -420,7 +544,7 @@ class Controller
 					cin.clear();
 					cout<<"Hello admin"<<endl;
 					cout<<"[1] -- Wyloguj"<<endl;
-					cout<<"[2] -- Edytuj repertuar"<<endl;
+					cout<<"[2] -- Dodaj film"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
 					cout<<u.username<<">";
 					cin>>wybor;
@@ -431,11 +555,11 @@ class Controller
 
 							break;
 						case 2:
-							rp.wyswietlRepertuar();
+							u.dodajFilm();
 							break;
 
 						case 4:
-							return 0;
+							return;
 							break;
 					}
 				}else
@@ -453,11 +577,11 @@ class Controller
 							u.logout();
 							break;
 						case 2:
-							rp.wyswietlRepertuar();
+							rp.wyswietlRepertuar(&u);
 							break;
 							
 						case 4:
-							return 0;
+							return;
 							break;
 					}
 				
@@ -478,14 +602,36 @@ int main(int argc, char** argv) {
 //    User u;
 //    u.registration();
 
-//	Controller c;
-//	c.start();
-	Repertuar r;
-	r.wybierzMiejsca(1);
+	Controller c;
+	c.start();
+//	Repertuar r;
+//	r.wybierzMiejsca(1);
 
 
+/*
+ifstream x("rezerwacje.json");
+json plik = json::parse(x);
+int i = 0;
+json rezerwacje;
+
+for(json element : plik)
+{
+	if(!(element["username"] == nullptr))
+	{
+		json newRezerwacja = {
+			{"username",element["username"]},
+			{"idSeansu",element["idSeansu"]},
+			{"miejsce",element["miejsce"]}
+		};
+		rezerwacje.push_back(newRezerwacja);
+	}
+}
+x.close();
+ofstream o("rezerwacje.json");
+o<<setw(4)<<rezerwacje;
+*/
 
 
-//	system("pause");
+	system("pause");
 	return 0;
 }
