@@ -215,11 +215,7 @@ class User
 								system("cls");
 								username = us;
 								zalogowany = true;
-								if(element["admin"]!=nullptr)
-								{
-									admin = true;
-									return;
-								}
+								admin = element["admin"];
 								return;
 							}
 						}
