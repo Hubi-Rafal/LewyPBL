@@ -13,10 +13,17 @@ using json = nlohmann::json;
 #define KEY_DOWN 80
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
+#define KEY_ENTER 13
 
 using namespace std;
 
 
+//===================================================================================================================================================================================================
+//! Klasa User
+/*!
+ * Klasa odpowiadająca za zarządzanie użytkownikami, ich rejestrację, logowanie oraz zarządzanie rezerwacjami.
+ * Klasa User obsługuje również dodawanie i usuwanie filmów z repertuaru, jeśli użytkownik jest administratorem.
+ */
 class User
 {
 	private:
@@ -287,7 +294,7 @@ class User
             json newUser = {
                 {"username", username},
                 {"password", password},
-                {"admin", nullptr}
+                {"admin", false}
             };
             uzytkownicy.push_back(newUser);
 
@@ -299,7 +306,6 @@ class User
             {
                 outFile << setw(4) << uzytkownicy;
                 outFile.close();
-                this->username = username;
                 zalogowany = true;
                 cout<<"Zarejestrowano pomyślnie, witaj w CineBooker!"<<endl;
             }
@@ -338,6 +344,7 @@ class User
 					}
 				}
 			}
+
 			rt.close();
 			int delNumber;
 			cout<<"Czy chcesz anulować którąś z rezerwacji?"<<endl<<"[X] - Anuluj rezerwację o podanym numerze."<<endl<<"[0] -- Wróć do menu głównego."<<endl;
@@ -364,7 +371,6 @@ class User
 					{
 						if(element["id"] == delNumber)
 						{
-							
 							element["id"] = nullptr;
 						}
 					}
@@ -397,34 +403,28 @@ class User
                     system("pause");
                 }
 			}
-			system("pause");
 		}
 };
-
-
 
 //===================================================================================================================================================================================================
 //! Klasa Repertuar
 /*!
-*
-* Klasa Repertuar zajmuje się obsługiwaniem repertuaru sali kinowej. Tu użytkownik może przejrzeć dostępne seanse, dostosować filtry wyszukiwania oraz wybrać seans który go interesuje.
-*
+* Klasa odpowiadająca za zarządzanie repertuarem filmów. Klasa ta wyświetla repertuar filmów, pozwala użytkownikowi na wybór seansu oraz rezerwację miejsc.
 */
 class Repertuar
 {
-		
 	public:
 		ifstream rz;
 		ifstream rp;
 		fstream o;
-		
-		
+
 		//! Funkcja wyswietlRepertuar
 		/*!
-		*
-		* Funkcja która wypisuje w konsoli informacje o aktualnym  repertuarze sali kinowej. Na chwilę obecną informacje te stanowią: Tytuł filmu, Godzina rozpoczęcia seansu, Język filmu oraz jego typ (2d lub 3d)
-		*
-		*/
+		 * Funkcja wyświetla repertuar filmów pobrany z pliku repertuar.json. Użytkownik może wybrać seans, na który chce kupić bilet.
+		 * Jeśli użytkownik nie jest zalogowany, zostaje poproszony o zalogowanie się.
+		 *
+         * @param u Wskaźnik do obiektu klasy User, reprezentujący zalogowanego użytkownika.
+		 */
 		void wyswietlRepertuar(User* u)
 		{	
 			rp.open("repertuar.json");
@@ -437,8 +437,8 @@ class Repertuar
 			{
 				cout<<"############# Seans #"<<film["id"]<<" #############"<<endl;
 				cout<<"#  Tytuł filmu: "<<film["tytul"]<<endl;
-				cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
-				cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
+				cout<<"#  Godzina rozpoczęcia: "<<film["godzina"]<<endl;
+				cout<<"#  Język: "<<film["jezyk"]<<endl;
 				cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
 				cout<<"####################################"<<endl<<endl;
 				i++;
@@ -451,8 +451,6 @@ class Repertuar
 				cin.clear();
 				cin.ignore(40,'\n');
 				cout<<">";
-					
-			
 			}
 			if(seans==0)
 			{
@@ -467,26 +465,19 @@ class Repertuar
 					u->login();
 					this->wybierzMiejsca(u,seans);
 				}
-				
 			}
-			
-
-						
 		}
-		
-		
-		
-		//! Funkcja wybierzMiejsca
-		/*!
-		*
-		* Funkcja umożliwiająca użytkownikowi zarezerwowanie miejsca na wybranym seansie
-		*
-		*/
-		
-				
+
 	private:
-		
-		
+
+        //! Funkcja wybierzMiejsca
+        /*!
+         * Funkcja wyświetla dostępne miejsca w sali kinowej i pozwala użytkownikowi wybrać miejsce na konkretny seans.
+         * Jeśli miejsce jest już zajęte, użytkownik zostaje poproszony o wybranie innego miejsca.
+         *
+         * @param u Wskaźnik do obiektu klasy User, reprezentujący zalogowanego użytkownika.
+         * @param seans Seans, na który użytkownik chce zarezerwować bilet.
+         */
 		void wybierzMiejsca(User* u,int seans)
 		{
 			rz.open("rezerwacje.json");
@@ -506,18 +497,15 @@ class Repertuar
 				}
 			}
             int getchar;
-            int polozenie[0][0];
             int x=0,y=0;
           
 		bool clear = false, fst = true;
 		while(clear==false)
 		{
-			
 		    do
             {
                 system("cls");
                 cout << "  ================== EKRAN ====================" << endl << endl;
-              
 				    for(int i = 0;i<y1;i++)
 	                {
 	                    for(int j = 0;j<x1;j++)
@@ -534,6 +522,7 @@ class Repertuar
 	                    }
 	                    cout<<endl;
 	                }
+
 	                if(fst == false)
 	                {
 	                	fst=true;
@@ -567,40 +556,39 @@ class Repertuar
 	                            ++x;
 	                        }
 	                        break;
-	                    case 13:
-	                    	
+	                    case KEY_ENTER:
 	                        miejsce = tab[y][x];
 	                        break;
 	            	}
-	        }while(getchar!=13);
+	        }while(getchar!=KEY_ENTER);
 	            
-			  	for(auto element : rezerwacje)
-			  	{
-			  		if(seans == element["idSeansu"] && miejsce == element["miejsce"])
-			  		{
-			  			fst = false;
-			  			clear = false;
-			  			break;
-					}else{
-						clear = true;
-						
-					}
-				}
-			
+            for(auto element : rezerwacje)
+            {
+                if(seans == element["idSeansu"] && miejsce == element["miejsce"])
+                {
+                    fst = false;
+                    clear = false;
+                    break;
+                }else{
+                    clear = true;
+                }
+            }
 		}
             rz.close();
             cout<<"Wybrane miejsce: "<<miejsce<<endl;
             
 			this->rezerwacja(u,miejsce,seans);
-
         }
         
         //! Funkcja rezerwacja
 		/*!
-		*
-		* Funkcja zapisująca rezerwację do  pliku rezerwacje.json
-		*
-		*/
+		 * Funkcja rezerwuje miejsce dla użytkownika na wcześniej wybrany seans. Tworzy nowy obiekt JSON z danymi rezerwacji i zapisuje go do pliku rezerwacje.json.
+         * Funkcja generuje unikalne ID dla każdej rezerwacji.
+         *
+         * @param u Wskaźnik do obiektu klasy User, reprezentujący zalogowanego użytkownika.
+         * @param miejsce Miejsce, które użytkownik chce zarezerwować.
+         * @param idSeansu ID seansu, na który użytkownik chce zarezerwować miejsce.
+		 */
 		void rezerwacja(User* u, int miejsce, int idSeansu)
 		{
 			rz.open("rezerwacje.json");
@@ -628,40 +616,36 @@ class Repertuar
 			o.close();
 			rz.close();
 			system("pause");
-			
 		}
-		
 };                      
 
 //===================================================================================================================================================================================================
 //! Klasa Controller
 /*!
-*
-* Klasa, od której zaczyna się działanie programu, i która odsyła wchodzącego z nim w interakcję użytkownika do poszczególnych funkcji programu, zaleznie od inputu.
-* 
-*/
+ * Klasa, od której zaczyna się działanie programu, i która odsyła wchodzącego z nim w interakcję użytkownika do poszczególnych funkcji programu.
+ */
 
 class Controller
 {
 	private:
 		
 		Repertuar rp; /*!< Obiekt klasy Repertuar */
-		int zalogowany;
+        User u; /*!< Obiekt klasy User */
 		
 	public:
 
-		//! Funkcja Start
+		//! Funkcja start
 		/*!
-		* Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie
-		*/
+		 * Funkcja inicjalizująca menu główne, z którego użytkownik może przemieszczać się po programie.
+		 * Funkcja ta wyświetla dostępne opcje i pozwala użytkownikowi na wybór akcji.
+		 * Użytkownik może się zalogować, zarejestrować, przeglądać repertuar lub wyjść z programu.
+		 * Funkcja ta obsługuje również panel administratora, jeśli użytkownik jest administratorem.
+		 */
 		void start()
 		{
-			int wybor;
-			User u;
+			int wybor = 0;
 			while(wybor!=4)
 			{
-
-
 				if(u.zalogowany == false)
 				{
 					cout<<"Witaj w menu głównym serwisu CineBooker."<<endl<<endl;
@@ -757,55 +741,21 @@ class Controller
 							
 						case 4:
 							return;
-							break;
 					}
-				
 				}
 			}
 		}
-
 };
 
-
-
 //===================================================================================================================================================================================================
+
 int main(int argc, char** argv) {
 
     SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
 
-//    User u;
-//    u.registration();
-
 	Controller c;
 	c.start();
-//	Repertuar r;
-//	r.wybierzMiejsca(1);
-
-
-/*
-ifstream x("rezerwacje.json");
-json plik = json::parse(x);
-int i = 0;
-json rezerwacje;
-
-for(json element : plik)
-{
-	if(!(element["username"] == nullptr))
-	{
-		json newRezerwacja = {
-			{"username",element["username"]},
-			{"idSeansu",element["idSeansu"]},
-			{"miejsce",element["miejsce"]}
-		};
-		rezerwacje.push_back(newRezerwacja);
-	}
-}
-x.close();
-ofstream o("rezerwacje.json");
-o<<setw(4)<<rezerwacje;
-*/
-
 
 	system("pause");
 	return 0;
