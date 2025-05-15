@@ -12,7 +12,16 @@
     {
         "admin": 1,
         "password": "678",
-        "username": "user3"
+        "username": "admin"
+    },
+    {
+        "admin": null,
+        "password": "1324",
+        "username": "user4"
+    },
+    {
+        "admin": null,
+        "password": "321",
+        "username": "user5"
     }
-    
 ]

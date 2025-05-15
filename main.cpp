@@ -18,8 +18,10 @@ class User
 	private:
 		fstream rz;
 		fstream users;
+		fstream rt;
 		json uzytkownicy;
-
+		json rezerwacje;
+		json repertuar;
 	
 	public:
 		string username;
@@ -28,8 +30,8 @@ class User
 		
 		User()
 		{
-			rz.open("rezerwacje.json");
 			users.open("uzytkownicy.json");
+			rt.open("repertuar.json");
             if(!users.is_open())
             {
                 cout<<"Nie znaleziono pliku z uzytkownikami, zostanie on utworzony."<<endl;
@@ -40,16 +42,21 @@ class User
             }else{
                 cout << "Znaleziono plik z uzytkownikami." << endl; //DO wywalenia potem
                 uzytkownicy = json::parse(users);
-                rezerwacje = json::parse(rz);
+                repertuar = json::parse(rt);
                 zalogowany = false;
                 admin = false;
             }
 		}
+		~User()
+		{
+			rt.close();
+			rz.close();
+			users.close();
+		}
 
 		void dodajFilm()
 		{
-			ifstream f("repertuar.json");
-			json plik = json::parse(f);
+			
 			if(admin==false)
 			{
 				return;
@@ -69,7 +76,7 @@ class User
 			cin>>godzina;
 
 			int max = 0;
-			for(auto element : plik)
+			for(auto element : repertuar)
 			{
 				if(element["id"]>max)
 				{
@@ -84,11 +91,11 @@ class User
 				{"godzina",godzina},
 				{"jezyk",jezyk}
 			};
-			plik.push_back(newSeans);
+			repertuar.push_back(newSeans);
 			
 			
 			ofstream o("repertuar.json");
-			o<<setw(4)<<plik;
+			o<<setw(4)<<repertuar;
 		
 		}
 	//! Funkcja login()
@@ -214,6 +221,7 @@ class User
             {
                 outFile << setw(4) << uzytkownicy;
                 outFile.close();
+                this->username = username;
                 zalogowany = true;
                 cout<<"Zarejestrowano pomyslnie, witaj w CineBooker!"<<endl;
             }
@@ -226,19 +234,100 @@ class User
         
         void wyswietlRezerwacje()
         {
+        	system("cls");
+        	rz.open("rezerwacje.json");
+        	json rezerwacje = json::parse(rz);
+ 			int i = 0;
         	for(auto element : rezerwacje)
         	{
         		if(element["username"]==this->username)
-        		{        				
-				
-					cout<<"############# Seans #"<<film["id"]<<" #############"<<endl;
-					cout<<"#  Tytul filmu: "<<film["tytul"]<<endl;
-					cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
-					cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
-					cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
-					cout<<"####################################"<<endl<<endl;
+        		{
+					
+					for(auto film : repertuar)
+					{
+						if(element["idSeansu"] == film["id"])
+						{	
+							cout<<"############# Rezerwacja #"<<element["id"]<<" #############"<<endl;
+							cout<<"#  Tytul elementu: "<<film["tytul"]<<endl;
+							cout<<"#  Godzina rozpoczecia: "<<film["godzina"]<<endl;
+							cout<<"#  Jezyk: "<<film["jezyk"]<<endl;
+							cout<<"#  Typ (2d/3d): "<<film["typ"]<<endl;
+							cout<<"####################################"<<endl<<endl;
+							i++;
+						}						
+					}
 				}
 			}
+			int delNumber;
+			cout<<"Czy chcesz anulować którąś z rezerwacji?"<<endl<<"[X] - Anuluj rezerwację o podanym numerze."<<endl<<"[0] -- Wróć do menu głównego."<<endl;
+			cout<<this->username<<">";
+
+			while(!(cin>>delNumber))
+			{
+				cin.clear();
+				cin.ignore(40,'\n');
+				cout<<">";
+			}
+			
+			
+			if(delNumber == 00)
+			{
+				rz.close();
+				return;
+			}else
+			{
+				int x = 1;
+				json owRezerwacje;
+				for(auto element:rezerwacje)
+				{
+					if(element["username"]==this->username)
+					{
+						if(element["id"] == delNumber)
+						{
+							
+							element["id"] = nullptr;
+						}
+					}
+					if(!(element["id"] == nullptr))
+					{
+						json newRezerwacja = {
+							{"id",x},
+							{"username",element["username"]},
+							{"idSeansu",element["idSeansu"]},
+							{"miejsce",element["miejsce"]}
+						};
+						owRezerwacje.push_back(newRezerwacja);
+								
+						x++;
+					}
+						
+				}
+				
+			/*	for(auto  element: rezerwacje)
+				{
+					cout<<element["id"];
+					if(!(element["id"] == nullptr))
+					{
+						json newRezerwacja = {
+							{"id",element["id"]},
+							{"username",element["username"]},
+							{"idSeansu",element["idSeansu"]},
+							{"miejsce",element["miejsce"]}
+						};
+						owRezerwacje.push_back(newRezerwacja);
+					}
+				}*/
+				
+				
+				rz.close();
+				
+				ofstream o("rezerwacje.json");
+				o<<setw(4)<<owRezerwacje;
+				o.close();
+			}
+
+
+			system("pause");
 		}
 };
 
@@ -255,15 +344,12 @@ class Repertuar
 {
 		
 	public:
-		
+		ifstream rz;
 		ifstream f;
 		fstream o;
 		json plik;
-		json rezerwacje;
 		Repertuar()
 		{
-			r.open("rezerwacje.json");
-			rezerwacje = json::parse(r);
 			f.open("repertuar.json");
             if(!f.is_open())
             {
@@ -280,7 +366,6 @@ class Repertuar
 		~Repertuar()
 		{
 			f.close();
-			r.close();
 		} 
 		
 		//! Funkcja wyswietlRepertuar
@@ -352,11 +437,12 @@ class Repertuar
 		
 				
 	private:
-		ifstream r;
 		
 		
 		void wybierzMiejsca(User* u,int seans)
 		{
+			rz.open("rezerwacje.json");
+			json rezerwacje = json::parse(rz);
             int miejsce;
 
 			int x1=12;
@@ -434,10 +520,11 @@ class Repertuar
 	                        }
 	                        break;
 	                    case 13:
+	                    	
 	                        miejsce = tab[y][x];
 	                        break;
-	                }
-	            }while(getchar!=13);
+	            	}
+	        }while(getchar!=13);
 	            
 			  	for(auto element : rezerwacje)
 			  	{
@@ -448,11 +535,12 @@ class Repertuar
 			  			break;
 					}else{
 						clear = true;
+						
 					}
 				}
 			
 		}
-            
+            rz.close();
             cout<<"Wybrane miejsce: "<<miejsce<<endl;
             
 			this->rezerwacja(u,miejsce,seans);
@@ -467,8 +555,19 @@ class Repertuar
 		*/
 		void rezerwacja(User* u, int miejsce, int idSeansu)
 		{
-			
+			rz.open("rezerwacje.json");
+			json rezerwacje = json::parse(rz);
+				int max = 0;
+			for(auto element : rezerwacje)
+			{
+				if(element["id"]>max)
+				{
+					max=element["id"];
+				}
+			}
+			int id = max+1;
 			json newRezerwacja = {
+				{"id",id},
 				{"username", u->username},
 				{"idSeansu", idSeansu},
 				{"miejsce", miejsce}
@@ -479,6 +578,7 @@ class Repertuar
 			
 			o<<setw(4)<<rezerwacje;
 			o.close();
+			rz.close();
 			system("pause");
 			
 		}
@@ -568,6 +668,7 @@ class Controller
 					cin.clear();
 					cout<<"[1] -- Wyloguj"<<endl;
 					cout<<"[2] -- Przegladaj repertuar"<<endl;
+					cout<<"[3] -- Rezerwacje"<<endl;
 					cout<<"[4] -- Wyjdz"<<endl;
 					cout<<u.username<<">";
 					cin>>wybor;
@@ -578,6 +679,9 @@ class Controller
 							break;
 						case 2:
 							rp.wyswietlRepertuar(&u);
+							break;
+						case 3:
+							u.wyswietlRezerwacje();
 							break;
 							
 						case 4:
