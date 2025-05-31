@@ -19,6 +19,110 @@ using namespace std;
 
 
 //===================================================================================================================================================================================================
+//! Klasa Files
+/*!
+ * Klasa odpowiedzialna za obsługę plików z których korzysta program.
+ */
+ 
+class Files
+{
+	private:
+		fstream users;
+		fstream rez;
+		fstream rep;
+		json rezerwacje;
+		json uzytkownicy;
+		json repertuar;
+	public:
+		//! Konstruktor klasy Files
+        /*!
+         * Otwiera wszystkie potrzebne pliki i sprawdza czy zostały one otwarte prawidłowo. Jeśli plik nie został znaleziony, tworzy nowy plik.
+         */
+		Files()
+		{
+			users.open("uzytkownicy.json");
+			rep.open("repertuar.json");
+	        rez.open("rezerwacje.json");
+	        
+	            if(!users.is_open())
+	            {
+	                cout<<"Nie znaleziono pliku z użytkownikami, zostanie on utworzony."<<endl;
+	                ofstream outFile("uzytkownicy.json");
+	                json emptyArray = json::array();
+	                outFile << emptyArray;
+	                outFile.close();
+	            }else{
+	                uzytkownicy = json::parse(users);
+	            }
+	        
+				
+	            if(!rez.is_open())
+	            {
+	                cout<<"Nie znaleziono pliku z rezerwacjami, zostanie on utworzony."<<endl;
+	                ofstream outFile("rezerwacje.json");
+	                json emptyArray = json::array();
+	                outFile << emptyArray;
+	                outFile.close();
+	            }else{
+	                rezerwacje = json::parse(rez);
+	            }
+	            
+				
+				
+	            if(!rep.is_open())
+	            {
+	                cout<<"Nie znaleziono pliku z repertuarem, zostanie on utworzony."<<endl;
+	                ofstream outFile("repertuar.json");
+	                json emptyArray = json::array();
+	                outFile << emptyArray;
+	                outFile.close();
+	            }else{
+	                repertuar = json::parse(rep);
+	                
+	            }
+		}
+		//! Dekonstruktor klasy Files
+        /*!
+         * Zamyka wszystkie otwarte w konstruktorze pliki.
+         */
+		~Files()
+	    {
+	       	users.close();
+	       	rez.close();
+			rep.close();
+		}
+		
+		
+		//! Funkcja getRepertuar()
+        /*!
+         * Zwraca zmienną repertuar, zawierającą zawartość pliku repertuar.json.
+         */
+		json getRepertuar()
+		{
+			return repertuar;
+		}
+		
+		//! Funkcja getRepertuar()
+        /*!
+         * Zwraca zmienną uzytkownicy, zawierającą zawartość pliku uzytkownicy.json.
+         */
+		json getUzytkownicy()
+		{
+			return uzytkownicy;
+		}
+		
+		//! Funkcja getRezerwacje()
+        /*!
+         * Zwraca zmienną rezerwacje, zawierającą zawartość pliku rezerwacje.json.
+         */
+		json getRezerwacje()
+		{
+			return rezerwacje;
+		}
+};
+ 
+
+//===================================================================================================================================================================================================
 //! Klasa User
 /*!
  * Klasa odpowiadająca za zarządzanie użytkownikami, ich rejestrację, logowanie oraz zarządzanie rezerwacjami.
@@ -26,53 +130,24 @@ using namespace std;
  */
 class User
 {
-	private:
-		fstream rz;
-		fstream users;
-		fstream rt;
-		json uzytkownicy;
-		json rezerwacje;
-	
-	
+
 	public:
+		
 		string username;
 		bool admin;
 		bool zalogowany;
 
         //! Konstruktor klasy User
         /*!
-         * Konstruktor klasy User otwiera plik z użytkownikami i sprawdza, czy istnieje. Jeśli nie, tworzy nowy plik.
-         * Jeśli plik otworzy się poprawnie, to wczytuje dane do obiektu JSON. i ustawia zmienne zalogowany i admin na false.
+         * Konstruktor klasy User ustawia zmienne zalogowany i admin na false.
          */
 		User()
 		{
-			users.open("uzytkownicy.json");
-			
-            if(!users.is_open())
-            {
-                cout<<"Nie znaleziono pliku z użytkownikami, zostanie on utworzony."<<endl;
-                ofstream outFile("uzytkownicy.json");
-                json emptyArray = json::array();
-                outFile << emptyArray;
-                outFile.close();
-            }else{
-                uzytkownicy = json::parse(users);
-                zalogowany = false;
-                admin = false;
-            }
+			zalogowany = false;
+			admin = false;
 		}
 
-        //! Destruktor klasy User
-        /*!
-         * Destruktor klasy User zamyka pliki z użytkownikami, rezerwacjami i repertuarem.
-         */
-		~User()
-		{
-			rt.close();
-			rz.close();
-			users.close();
-		}
-
+      
         //! Funkcja dodajFilm()
         /*!
          * Funkcja dodaje nowy film do repertuaru. Użytkownik musi być administratorem, aby móc dodać film.
@@ -81,12 +156,12 @@ class User
          */
 		void dodajFilm()
 		{
-			rt.open("repertuar.json");
-			json repertuar = json::parse(rt);
 			if(admin==false)
 			{
 				return;
 			}
+			Files f;
+			json repertuar = f.getRepertuar();
 			
 			string tytul, typ, jezyk, godzina;
 			int id;
@@ -125,7 +200,6 @@ class User
 			
 			ofstream o("repertuar.json");
 			o<<setw(4)<<repertuar;
-			rt.close();
 			o.close();
 		}
 
@@ -137,12 +211,12 @@ class User
          */
 		void usunFilm()
 		{
-			rt.open("repertuar.json");
-			json repertuar = json::parse(rt);
 			if(admin==false)
 			{
 				return;
 			}
+			Files f;
+			json repertuar = f.getRepertuar();
 			
 			for(auto film : repertuar)
 			{
@@ -184,7 +258,6 @@ class User
 					}
 						
 				}
-				rt.close();
 				ofstream o("repertuar.json");
 				o<<setw(4)<<owFilmy;
 			
@@ -198,6 +271,8 @@ class User
          */
 		void login()
         {
+        	Files f;
+        	json uzytkownicy = f.getUzytkownicy();
         	system("cls");
            	string us, pass;
            	cout<<"LOGOWANIE"<<endl<<"Proszę wpisać nazwę użytkownika"<<endl<<">";
@@ -256,6 +331,8 @@ class User
          */
         void registration()
         {
+        	Files f;
+        	json uzytkownicy = f.getUzytkownicy();
             string password;
             cout << "Podaj nazwę użytkownika: ";
             cin >> username;
@@ -319,10 +396,10 @@ class User
         void wyswietlRezerwacje()
         {
         	system("cls");
-        	rz.open("rezerwacje.json");
-        	rt.open("repertuar.json");
-        	json repertuar = json::parse(rt);
-        	rezerwacje = json::parse(rz);
+        	Files f;
+        	json repertuar = f.getRepertuar();
+        	json rezerwacje = f.getRezerwacje();
+        	
  			int i = 0;
         	for(auto element : rezerwacje)
         	{
@@ -345,7 +422,6 @@ class User
 				}
 			}
 
-			rt.close();
 			int delNumber;
 			cout<<"Czy chcesz anulować którąś z rezerwacji?"<<endl<<"[X] - Anuluj rezerwację o podanym numerze."<<endl<<"[0] -- Wróć do menu głównego."<<endl;
 			cout<<this->username<<">";
@@ -359,7 +435,6 @@ class User
 
 			if(delNumber == 0)
 			{
-				rz.close();
 				return;
 			}else
 			{
@@ -388,7 +463,6 @@ class User
 					}
 				}
 
-				rz.close();
 				
 				ofstream o("rezerwacje.json");
                 if (!o.is_open()) {
@@ -414,9 +488,6 @@ class User
 class Repertuar
 {
 	public:
-		ifstream rz;
-		ifstream rp;
-		fstream o;
 
 		//! Funkcja wyswietlRepertuar
 		/*!
@@ -427,8 +498,8 @@ class Repertuar
 		 */
 		void wyswietlRepertuar(User* u)
 		{	
-			rp.open("repertuar.json");
-            json repertuar = json::parse(rp);
+			Files f;
+    		json repertuar = f.getRepertuar();
 					
 			cout<<"=========== REPERTUAR ============="<<endl<<endl;
 			
@@ -445,7 +516,8 @@ class Repertuar
 			}
 			int seans;
 			cout<<"Wybierz numer seansu na który chcesz kupić bilet. Wpisz '0' aby wrócić do menu"<<endl<<">";
-			rp.close();
+			
+		
 			while(!(cin>>seans) || (seans<0 || seans>i))
 			{
 				cin.clear();
@@ -480,8 +552,9 @@ class Repertuar
          */
 		void wybierzMiejsca(User* u,int seans)
 		{
-			rz.open("rezerwacje.json");
-			json rezerwacje = json::parse(rz);
+			Files f;
+        	json rezerwacje = f.getRezerwacje();
+        	
             int miejsce;
 
 			int x1=12;
@@ -574,7 +647,6 @@ class Repertuar
                 }
             }
 		}
-            rz.close();
             cout<<"Wybrane miejsce: "<<miejsce<<endl;
             
 			this->rezerwacja(u,miejsce,seans);
@@ -591,8 +663,9 @@ class Repertuar
 		 */
 		void rezerwacja(User* u, int miejsce, int idSeansu)
 		{
-			rz.open("rezerwacje.json");
-			json rezerwacje = json::parse(rz);
+			Files f;
+        	json rezerwacje = f.getRezerwacje();
+        	
 				int max = 0;
 			for(auto element : rezerwacje)
 			{
@@ -614,7 +687,6 @@ class Repertuar
 			
 			o<<setw(4)<<rezerwacje;
 			o.close();
-			rz.close();
 			system("pause");
 		}
 };                      

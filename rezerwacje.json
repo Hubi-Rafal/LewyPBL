@@ -4,5 +4,11 @@
         "idSeansu": 5,
         "miejsce": 24,
         "username": "user2"
+    },
+    {
+        "id": 2,
+        "idSeansu": 3,
+        "miejsce": 36,
+        "username": "user2"
     }
 ]
