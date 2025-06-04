@@ -168,7 +168,7 @@ class User
 			cout<<"Podaj dane nowego seansu."<<endl;
 			cout<<"Tytuł: ";
 			string x,y;			// zmienne do getline linie nizej
-			getline(cin,y);		// dummy getline bo jak getline(cin,tytul) nie ma kolegi to dostaje pierdolca // prawdopodobnie coś z buforem
+			getline(cin,y);
 			
 			getline(cin,tytul);
 			cout<<"Typ (2d/3d): ";
